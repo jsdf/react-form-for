@@ -2,6 +2,8 @@
 
 A simple and easy-to-use form builder for React, in the style of Rails' `form_for`
 
+![under construction](http://jamesfriend.com.au/files/under-construction.gif)
+
 ### example
 
 ```js
