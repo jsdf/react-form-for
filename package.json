@@ -1,11 +1,11 @@
 {
   "name": "react-form-for",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "description": "A simple form builder for React in the style of Rails' form_for",
   "main": "./lib/index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "prepublish":  "jsx --harmony src/ lib/"
+    "prepublish": "jsx --harmony src/ lib/"
   },
   "author": "James Friend <james@jsdf.co>",
   "license": "MIT",
