@@ -1,0 +1,6 @@
+src/
+test/
+example/
+Makefile
+*.sh
+.module-cache
