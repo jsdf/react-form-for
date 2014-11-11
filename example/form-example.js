@@ -5,12 +5,12 @@ var Form = React.createClass({
   render: function() {
     return FormFor(this.state.value, {onChange: this.handleChange}, (f) =>
       <form>
-        <f.Field for="name" />
-        <f.Field for="from_date" />
-        <f.Field for="to_date" />
-        {f.FieldsFor('related', (fr) =>
+        <Field for="name" />
+        <Field for="from_date" />
+        <Field for="to_date" />
+        {f.FieldsFor('related', (f2) =>
           <div>
-            <fr.Field for="something" />
+            <Field for="something" />
           </div>
         )}
       </form>

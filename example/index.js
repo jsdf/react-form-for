@@ -1,5 +1,6 @@
 var React = require('react')
 var FormFor = require('../')
+var Field = FormFor.Field
 
 Form = React.createClass({
   getInitialState: function() {
@@ -14,20 +15,20 @@ Form = React.createClass({
       }
     }
   },
-  handleChange: function (value) {
-    console.log('change', value)
-    this.setState({thing: value})
+  handleChange: function (updatedThing) {
+    console.log('change', updatedThing)
+    this.setState({thing: updatedThing})
   },
   render: function() {
     var thing = this.state.thing
-    return FormFor(thing, {onChange: this.handleChange}, function(f) {
+    return FormFor(thing, {onChange: this.handleChange}, function(form) {
       return React.DOM.form(null,
-        f.Field({for: 'some_field'}),
-        f.Field({for: 'also_a_field'}),
-        f.FieldsFor('a_subform', function(fc) {
+        React.createElement(Field, {for: 'some_field'}),
+        React.createElement(Field, {for: 'also_a_field'}),
+        form.fieldsFor('a_subform', function(subform) {
           return React.DOM.div(null,
-            fc.Field({for: 'subField1'}),
-            fc.Field({for: 'subField2'})
+            React.createElement(Field, {for: 'subField1'}),
+            React.createElement(Field, {for: 'subField2'})
           )
         })
       )
@@ -35,4 +36,4 @@ Form = React.createClass({
   }
 })
 
-React.renderComponent(React.createElement(Form), document.body)
+React.render(React.createElement(Form), document.body)

@@ -1,50 +1,29 @@
 var React = require('react')
-var {Input} = require('react-bootstrap')
-var {each, clone, extend, omit, defaults, memoize, isFunction} = require('underscore')
+var {cloneWithProps} = require('react/addons').addons
 
-function bind(fn, me) {
-  console.assert(fn)
-  console.assert(me)
-  return () => fn.apply(me, arguments)
+var {clone, extend, isFunction} = require('underscore')
+var {bindAll, updateIn} = require('./util')
+
+var Field = require('./field')
+var FieldProxy = require('./field-proxy')
+
+function isFieldProxy(node) {
+  return node.type === FieldProxy.type
 }
 
-function bindAll(obj, ...methods) {
-  each(methods, (methodName) => obj[methodName] = bind(obj[methodName], obj))
+function hasForm(node) {
+  return node && node.props && node.props.form
 }
 
-var ID_SUFFIX = new RegExp('(_ids|_id)$', 'g')
-var UNDERBAR = new RegExp('_', 'g')
-
-function capitalize(str) {
-  str = str.toLowerCase()
-  return str.substring(0, 1).toUpperCase() + str.substring(1)
-}
-
-function humanize(str) {
-  str = str.toLowerCase()
-  str = str.replace(ID_SUFFIX, '')
-  str = str.replace(UNDERBAR, ' ')
-  str = capitalize(str)
-  return str
-}
-
-var labelForName = memoize(humanize)
-
-function updateIn(object, path, value) {
-  if (!path || !path.length) throw new Error('invalid path')
-
-  var updated = clone(object)
-  var [name] = path
-  if (path.length === 1) {
-    updated[name] = value
-  } else {
-    updated[name] = updateIn(updated[name], path.slice(1), value)
-  }
-  return updated
-}
-
-DEFAULT_COMPONENTS = {
-  Input: Input,
+// recursive map over children
+function mapElementTree(parent, fn) {
+  return cloneWithProps(parent, {
+    children: React.Children.map(parent.props.children, function(child) {
+      if (!child || !child.props) return child
+      var updatedChild = fn(child)
+      return mapElementTree(fn(child), fn)
+    }),
+  })
 }
 
 class FormFor {
@@ -57,15 +36,24 @@ class FormFor {
     opts = opts || {}
 
     bindAll(this, 'applyUpdate')
-    this.subject = subject
-    this.opts = opts
+    this.subject = subject || {}
     this.path = opts.path || []
     this.delegate = opts.delegate
     this.onChange = opts.onChange
-    this.components = defaults(opts.components || {}, DEFAULT_COMPONENTS)
+    this.fieldComponent = opts.fieldComponent || Field
+    console.debug(this)
     
-    if (block) return block(this)
+    if (block) return this.executeBlock(block)
     else return this
+  }
+  executeBlock(block) {
+    var form = this
+    var tree = block(form)
+
+    // traverse returned component tree and inject form prop
+    return mapElementTree(tree, (node) =>
+      isFieldProxy(node) && !hasForm(node) ? cloneWithProps(node, {form}) : node
+    )
   }
   applyUpdate(value, path) {
     if (this.delegate) return this.delegate.applyUpdate(value, path)
@@ -78,19 +66,16 @@ class FormFor {
     return this.delegate || this
   }
   getFieldValue(name) {
-    if (this.subject[name] == null) {
-      throw new Error(`property ${name} not found on subject`)
-    }
     return this.subject[name]
   }
-  FieldsFor(name, opts, block) {
+  fieldsFor(name, opts, block) {
     if (isFunction(opts)) {
       block = opts
       opts = null
     }
     opts = opts || {}
 
-    var fieldValue = this.getFieldValue(name)
+    var fieldValue = this.getFieldValue(name) || {}
 
     var fieldOpts = extend(clone(opts), {
       path: this.path.concat(name),
@@ -98,30 +83,8 @@ class FormFor {
     })
     return new FormFor(fieldValue, fieldOpts, block)
   }
-  Field(props = {}) {
-    var self = this
-    var name = props.for || props.name
-    var {label} = props
-    var value = this.getFieldValue(name)
-    var Component = props.component || this.components.Input
-
-    var componentProps = extend(omit(props, 'for'), {name})
-
-    function handleChange(e) {
-      e.stopPropagation()
-      self.applyUpdate(e.target.value, self.path.concat(name))
-    }
-
-    return (
-      <Component
-        type="text"
-        {...componentProps}
-        value={value}
-        label={label || labelForName(name)}
-        onChange={handleChange}
-      />
-    )
-  }
 }
+
+FormFor.Field = FieldProxy
 
 module.exports = FormFor
