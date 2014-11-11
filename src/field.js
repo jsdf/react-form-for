@@ -11,7 +11,7 @@ var Field = React.createClass({
     groupClassName: React.PropTypes.string,
     fieldClassName: React.PropTypes.string,
     wrapperClassName: React.PropTypes.string,
-    labelClassName: React.PropTypes.string
+    labelClassName: React.PropTypes.string,
     onChange: React.PropTypes.func
   },
 
