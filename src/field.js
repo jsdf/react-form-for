@@ -5,9 +5,9 @@ var React = require('react')
 var Field = React.createClass({
   propTypes: {
     type: React.PropTypes.string,
-    label: React.PropTypes.node,
-    help: React.PropTypes.node,
-    hint: React.PropTypes.node,
+    label: React.PropTypes.any,
+    help: React.PropTypes.any,
+    hint: React.PropTypes.any,
     groupClassName: React.PropTypes.string,
     fieldClassName: React.PropTypes.string,
     wrapperClassName: React.PropTypes.string,

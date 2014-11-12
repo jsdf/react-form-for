@@ -15,13 +15,21 @@ function hasForm(node) {
   return node && node.props && node.props.form
 }
 
+var isElement = React.isValidElement || React.isValidComponent
+
 // recursive map over children
 function mapElementTree(parent, fn) {
+  if (
+    !isElement(parent) 
+    || typeof parent.props == 'string'
+    || (parent.props && typeof parent.props.children  == 'string')
+  ) return parent
+
   return cloneWithProps(parent, {
     children: React.Children.map(parent.props.children, function(child) {
-      if (!child || !child.props) return child
+      if (!isElement(child)) return child
       var updatedChild = fn(child)
-      return mapElementTree(fn(child), fn)
+      return mapElementTree(updatedChild, fn)
     }),
   })
 }
@@ -41,7 +49,6 @@ class FormFor {
     this.delegate = opts.delegate
     this.onChange = opts.onChange
     this.fieldComponent = opts.fieldComponent || Field
-    console.debug(this)
     
     if (block) return this.executeBlock(block)
     else return this
@@ -50,10 +57,16 @@ class FormFor {
     var form = this
     var tree = block(form)
 
+    function injectForm(node) {
+      if(isFieldProxy(node) && !hasForm(node)) {
+        return cloneWithProps(node, {form})
+      } else {
+        return node
+      }
+    }
+
     // traverse returned component tree and inject form prop
-    return mapElementTree(tree, (node) =>
-      isFieldProxy(node) && !hasForm(node) ? cloneWithProps(node, {form}) : node
-    )
+    return injectForm(mapElementTree(tree, injectForm))
   }
   applyUpdate(value, path) {
     if (this.delegate) return this.delegate.applyUpdate(value, path)
@@ -77,14 +90,16 @@ class FormFor {
 
     var fieldValue = this.getFieldValue(name) || {}
 
-    var fieldOpts = extend(clone(opts), {
+    var fieldOpts = extend({
       path: this.path.concat(name),
       delegate: this.delegate || this,
-    })
+      fieldComponent: this.fieldComponent,
+    }, clone(opts))
     return new FormFor(fieldValue, fieldOpts, block)
   }
 }
 
 FormFor.Field = FieldProxy
+FormFor.FormFor = FormFor
 
 module.exports = FormFor

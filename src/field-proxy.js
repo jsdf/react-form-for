@@ -7,8 +7,10 @@ var {humanize} = require('./inflection')
 
 var labelForName = memoize(humanize)
 
+var isElement = React.isValidElement || React.isValidComponent
+
 function createComponent(component, props) {
-  if (React.isValidElement(component)) {
+  if (isElement(component)) {
     return cloneWithProps(component, props)
   } else {
     return React.createElement(component, props)
