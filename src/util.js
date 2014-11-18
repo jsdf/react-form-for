@@ -1,17 +1,29 @@
-var {each, clone} = require('underscore')
+var extend = require('xtend/mutable')
+
+function clone(source) {
+  return extend({}, source)
+}
+
+function isFunction(subject) {
+  return typeof subject === 'function'
+}
+
+function isString(subject) {
+  return typeof subject === 'function'
+}
 
 function bind(fn, me) {
   return () => fn.apply(me, arguments)
 }
 
 function bindAll(obj, ...methods) {
-  each(methods, (methodName) => obj[methodName] = bind(obj[methodName], obj))
+  methods.forEach((methodName) => obj[methodName] = bind(obj[methodName], obj))
 }
 
 function updateIn(object, path, value) {
   if (!path || !path.length) throw new Error('invalid path')
 
-  var updated = clone(object)
+  var updated = extend({}, object)
   var [name] = path
   if (path.length === 1) {
     updated[name] = value
@@ -21,4 +33,4 @@ function updateIn(object, path, value) {
   return updated
 }
 
-module.exports = {bind, bindAll, updateIn}
+module.exports = {bind, bindAll, updateIn, clone, extend, isFunction, isString}

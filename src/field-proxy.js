@@ -1,7 +1,9 @@
 var React = require('react')
 var {cloneWithProps} = require('react/addons').addons
 
-var {clone, extend, omit, memoize, isFunction, isObject} = require('underscore')
+var {extend} = require('./util')
+var omit = require('lodash.omit')
+var memoize = require('lodash.memoize')
 
 var {humanize} = require('./inflection')
 
@@ -47,8 +49,10 @@ var FieldProxy = React.createClass({
     return extend(omit(this.props, 'for'), {value, name, type, onChange, label})
   },
   render: function() {
+    if (!this.props.form) return <span>no form for {this.getName()}</span>
     var component = this.props.component || this.props.form.fieldComponent
 
+    // console.log('this.getComponentProps()', this.getComponentProps())
     return createComponent(component, this.getComponentProps())
   }
 })
