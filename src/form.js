@@ -26,11 +26,19 @@ function hasForm(node) {
   return node && node.props && node.props.form
 }
 
+var isElement = React.isValidElement || React.isValidComponent
+
 // recursive map over children
 function applyFormToChildren(parent, form) {
+  if (
+    !isElement(parent) 
+    || typeof parent.props == 'string'
+    || (parent.props && typeof parent.props.children  == 'string')
+  ) return parent
+
   return cloneWithProps(parent, {
     children: React.Children.map(parent.props.children, function(child) {
-      if (!child || !child.props) return child
+      if (!isElement(child)) return child
       console.log(child.type.displayName, child.props)
       var updatedChild = needsForm(child) ? cloneWithProps(child, {form}) : child
       // stop when reaching a form proxy

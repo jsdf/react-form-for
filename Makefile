@@ -1,6 +1,7 @@
 JSX=$(shell npm root)/.bin/jsx
 BROWSERIFY=$(shell npm root)/.bin/browserify
 BOOTSTRAP=$(shell node -e "process.stdout.write(require.resolve('bootstrap/dist/css/bootstrap.css'))")
+SOURCEFILES=lib/*.js
 
 all: build
 

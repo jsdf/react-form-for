@@ -1,22 +1,25 @@
 {
   "name": "react-form-for",
-  "version": "0.2.0",
+  "version": "0.3.0",
   "description": "A simple form builder for React in the style of Rails' form_for",
   "main": "./lib/index.js",
   "scripts": {
     "test": "npm run prepublish && tap test",
-    "prepublish": "jsx --harmony src/ lib/"
+    "prepublish": "./build.sh"
   },
   "author": "James Friend <james@jsdf.co>",
   "license": "MIT",
+  "homepage": "https://github.com/jsdf/react-form-for",
+  "bugs": "https://github.com/jsdf/react-form-for/issues",
+  "repository": {
+    "type": "git",
+    "url": "git://github.com/jsdf/react-form-for.git"
+  },
   "devDependencies": {
-    "react": "^0.12.0",
-    "react-tools": "^0.12.0",
-    "react-bootstrap": "^0.12.0",
-    "bootstrap": "^3.3.0",
+    "react": "0.12.0",
+    "react-tools": "0.11.2",
     "tap": "^0.4.13",
-    "browserify": "^6.2.0",
-    "node-jsx": "^0.12.0"
+    "node-jsx": "0.12.0"
   },
   "dependencies": {
     "xtend": "^4.0.0",
