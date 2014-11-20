@@ -1,92 +1,123 @@
 var React = require('react')
 var {cloneWithProps} = require('react/addons').addons
 
-var {bindAll, updateIn, clone, extend, isFunction, isString} = require('./util')
+var {updateIn, extend, isFunction, isString} = require('./util')
 
 var Field = require('./field')
 var FieldProxy = require('./field-proxy')
 var FormProxy = require('./form-proxy')
 
-function needsForm(node) {
-  return (
-    node.type === FieldProxy.type ||
-    node.type === FormProxy.type
-  ) && !hasForm(node)
+var isElement = React.isValidElement || React.isValidComponent
+
+function hasChildren(node) {
+  return node && node.props && node.props.children
+}
+
+function getType(node) {
+  return node && node.type || node.constructor
 }
 
 function isFieldProxy(node) {
-  node.type === FieldProxy.type
+  return getType(node) === FieldProxy.type
 }
 
 function isFormProxy(node) {
-  node.type === FormProxy.type
+  return getType(node) === FormProxy.type
 }
 
-function hasForm(node) {
-  return node && node.props && node.props.form
+function noChildrenError() {
+  throw new Error('form/fieldset without children not valid')
 }
 
-var isElement = React.isValidElement || React.isValidComponent
+// recursive map over children and inject form prop
+function getChildrenWithForm(node, form) {
+  return React.Children.map(node.props.children, function(child) {
+    if (
+      !isElement(child)
+      || typeof child == 'string'
+      || typeof child.props == 'string'
+      || (child.props && typeof child.props.children == 'string')
+    ) {
+      return child
+    }
 
-// recursive map over children
-function applyFormToChildren(parent, form) {
-  if (
-    !isElement(parent) 
-    || typeof parent.props == 'string'
-    || (parent.props && typeof parent.props.children  == 'string')
-  ) return parent
+    var updatedProps = {}
 
-  return cloneWithProps(parent, {
-    children: React.Children.map(parent.props.children, function(child) {
-      if (!isElement(child)) return child
-      console.log(child.type.displayName, child.props)
-      var updatedChild = needsForm(child) ? cloneWithProps(child, {form}) : child
-      // stop when reaching a form proxy
-      return isFormProxy(updatedChild) ? updatedChild : applyFormToChildren(updatedChild, form)
-    }),
+    if (isFormProxy(child)) {
+      if (!hasChildren(child)) noChildrenError()
+      // stop recursion, just inject form delegateForm
+      updatedProps.delegateForm = form
+    } else {
+      if (isFieldProxy(child)) {
+        updatedProps.form = form
+      }
+      // recurse to update grandchildren
+      updatedProps.children = getChildrenWithForm(child, form)
+    }
+
+    return cloneWithProps(child, updatedProps)
   })
 }
 
 class Form {
-  constructor(opts) {
-    if (!(this instanceof Form)) return new Form(opts)
-    opts = opts || {}
+  constructor(component, delegateForm) {
+    if (!(this instanceof Form)) return new Form(component, delegateForm)
 
-    bindAll(this, 'applyUpdate')
-    var formValueOpt = opts.value || opts.for
-    var formNameOpt = opts.name || opts.for
-    var name, value
-    if (isString(formNameOpt)) name = formNameOpt
-    else if (formValueOpt) value = formValueOpt
+    this.component = component
+    var props = this.component.props
+    var value = Form.getValue(component)
+    var name = Form.getName(component)
 
-    console.log('value', value)
-
-    this.delegate = opts.form
-    this.subject = (this.delegate && name ? this.delegate.getFieldValue(name) : value) || {}
-    this.path = (this.delegate && name ? this.delegate.path.concat(name) : opts.path) || []
-    this.fieldComponent = (this.delegate ? this.delegate.fieldComponent : opts.fieldComponent) || Field
-    this.onChange = opts.onChange
-    console.log('children for ', this.subject, React.Children.map(opts.children, (ch)=>[ch.type.displayName, ch.props]))
-    return opts.children ? this.applySelfToChildren(opts.children) : null
+    if (name && !delegateForm) throw new Error('delegateForm required when name provided')
+    if (delegateForm && !name) throw new Error('name required when delegateForm provided')
+    if (delegateForm) {
+      // a nested form fieldset, delegates to the top level form
+      if (!(delegateForm instanceof Form)) throw new Error('invalid delegateForm')
+      this.delegateForm = delegateForm
+      this.subject = this.delegateForm.getFieldValue(name) || {}
+      this.path = this.delegateForm.path.concat(name)
+    } else {
+      // the top level form
+      this.subject = value || {}
+      this.path = []
+      this.fieldComponent = props.fieldComponent || Field
+      this.onChange = props.onChange
+    }
+    this.fieldComponent = (
+      props.fieldComponent
+      || this.delegateForm && this.delegateForm.fieldComponent
+      || Field
+    )
   }
-  applySelfToChildren(children) {
-    var form = this
-    // traverse component children and inject form prop
-    return React.Children.map(children, (child) => applyFormToChildren(child, form))
+  getChildren() {
+    if (this.component.props.children) {
+      // traverse component children and inject form prop
+      return getChildrenWithForm(this.component, this)
+    } else {
+      noChildrenError()
+    }
   }
   applyUpdate(value, path) {
-    if (this.delegate) return this.delegate.applyUpdate(value, path)
+    if (this.delegateForm) return this.delegateForm.applyUpdate(value, path)
 
     if (isFunction(this.onChange)) {
       this.onChange(updateIn(this.subject, path, value))
     }
   }
-  getDelegate() {
-    return this.delegate || this
-  }
   getFieldValue(name) {
     return this.subject[name]
   }
 }
+
+var FormClassMethods = {
+  getValue: function(component) {
+    return component.props.value || !isString(component.props.for) && component.props.for
+  },
+  getName: function(component) {
+    return component.props.name || isString(component.props.for) && component.props.for
+  },
+}
+
+extend(Form, FormClassMethods)
 
 module.exports = Form

@@ -1,12 +1,20 @@
 require('node-jsx').install({harmony: true})
 
-var expected = '<form><div><label>Name</label><input form="[object Object]" type="text" name="name" label="Name"></div><div><label>From date</label><input form="[object Object]" type="text" name="from_date" label="From date"></div><div><label>To date</label><input form="[object Object]" type="text" name="to_date" label="To date"></div><div><div><label>Something</label><input form="[object Object]" type="text" name="something" label="Something"></div></div></form>'
+var expected = '<form><div><label>Name</label><input type="text" value="James" label="Name"></div><div><label>From date</label><input type="text" value="2012-1-1" label="From date"></div><div><label>To date</label><input type="text" value="2012-21-31" label="To date"></div><div class="wrapper-container"><div class="related-stuff"><div><label>SomeThing</label><input label="SomeThing" type="text" value="1"></div><div><label>Something else</label><input type="text" value="3" label="Something else"></div></div></div></form>'
 
-// require("tap").test("make sure it runs", function (t) {
-  // t.plan(1)
+if (process.env.DISABLE_TAP) {
+  console.log('running without tap')
+  run()
+} else {
+  require("tap").test("make sure it runs", run)
+}
+
+function run(t) {
+  t && t.plan(1)
   var React = require('react')
   var ExampleForm = require('../example/form-example')
   var result = React.renderToStaticMarkup(React.createElement(ExampleForm))
-  console.log('result',result)
-  // t.equal(expected, result, "output is correct")
-// })
+  t && t.equal(result, expected, "output is correct")
+}
+
+

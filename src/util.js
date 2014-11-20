@@ -1,5 +1,9 @@
 var extend = require('xtend/mutable')
 
+var slice = Array.prototype.slice
+var concat = Array.prototype.concat
+
+// subset of underscore methods for our purposes
 function clone(source) {
   return extend({}, source)
 }
@@ -9,7 +13,7 @@ function isFunction(subject) {
 }
 
 function isString(subject) {
-  return typeof subject === 'function'
+  return typeof subject === 'string'
 }
 
 function bind(fn, me) {
@@ -20,6 +24,35 @@ function bindAll(obj, ...methods) {
   methods.forEach((methodName) => obj[methodName] = bind(obj[methodName], obj))
 }
 
+function contains(haystack, needle) {
+  return haystack.indexOf(needle) > -1
+}
+
+function pick(obj, iteratee) {
+  var result = {}, key
+  if (obj == null) return result
+  if (isFunction(iteratee)) {
+    for (key in obj) {
+      var value = obj[key]
+      if (iteratee(value, key, obj)) result[key] = value
+    }
+  } else {
+    var keys = concat.apply([], slice.call(arguments, 1))
+    obj = new Object(obj)
+    for (var i = 0, length = keys.length; i < length; i++) {
+      key = keys[i]
+      if (key in obj) result[key] = obj[key]
+    }
+  }
+  return result
+}
+
+function omit(obj) {
+    var keys = concat.apply([], slice.call(arguments, 1)).map(String)
+    return pick(obj, (value, key) => !contains(keys, key))
+  }
+
+// update nested object structure via copying
 function updateIn(object, path, value) {
   if (!path || !path.length) throw new Error('invalid path')
 
@@ -33,4 +66,4 @@ function updateIn(object, path, value) {
   return updated
 }
 
-module.exports = {bind, bindAll, updateIn, clone, extend, isFunction, isString}
+module.exports = {bind, bindAll, updateIn, clone, extend, omit, pick, contains, isFunction, isString}

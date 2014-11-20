@@ -1,3 +1,4 @@
+/** @jsx React.DOM */
 var React = require('react')
 var {cloneWithProps} = require('react/addons').addons
 
@@ -54,7 +55,6 @@ var FieldProxy = React.createClass({
     if (!this.props.form) return <span>no form for {this.getName()}</span>
     var component = this.props.component || this.props.form.fieldComponent
 
-    // console.log('this.getComponentProps()', this.getComponentProps())
     return createComponent(component, this.getComponentProps())
   }
 })

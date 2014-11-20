@@ -22,10 +22,12 @@ var ExampleForm = React.createClass({
         <Field for="name" />
         <Field for="from_date" />
         <Field for="to_date" />
-        <Fields for="related">
-          <Field for="something" />
-          <Field for="something_else" />
-        </Fields>
+        <div className="wrapper-container">
+          <Fields for="related" className="related-stuff">
+            <Field for="something" label="SomeThing" />
+            <Field for="something_else" />
+          </Fields>
+        </div>
       </Form>
     )
   }

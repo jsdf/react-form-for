@@ -1,4 +1,5 @@
 var React = require('react')
+var {omit} = require('./util')
 
 // a subset of react-bootstrap/Input, without any bootstrapisms
 // most importantly it accepts value and label props and an onChange callback
@@ -35,18 +36,20 @@ var Field = React.createClass({
       return this.props.children
     }
 
+    var propsForInput = omit(this.props, 'form', 'name')
+
     switch (this.props.type) {
       case 'select':
-        input = <select ref="input" key="input" children={this.props.children} {...this.props} />
+        input = <select ref="input" key="input" children={this.props.children} {...propsForInput} />
         break
       case 'textarea':
-        input = <textarea ref="input" key="input" {...this.props} />
+        input = <textarea ref="input" key="input" {...propsForInput} />
         break
       case 'submit':
-        input = <input type="submit" ref="input" key="input" {...this.props} />
+        input = <input type="submit" ref="input" key="input" {...propsForInput} />
         break
       default:
-        input = <input ref="input" key="input" {...this.props} />
+        input = <input ref="input" key="input" {...propsForInput} />
     }
 
     return input
