@@ -46,9 +46,10 @@ var FieldProxy = React.createClass({
     var name = this.getName()
     var label = this.props.label || labelForName(name)
     var value = form.getFieldValue(name)
+    var id = `field_${this._rootNodeID}`
     var onChange = this.handleChange
 
-    return extend(omit(this.props, 'for'), {value, name, type, onChange, label})
+    return extend(omit(this.props, 'for'), {value, name, type, onChange, label, id})
   },
   render: function() {
     if (!this.props.form) throw new Error(`no form for ${this.getName()}`)
