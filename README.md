@@ -1,18 +1,17 @@
 # react-form-for
 
-A simple and easy-to-use form builder for React, in the style of Rails' `form_for`
+An expressive and intuitive form builder for React, in the style of Rails' `form_for`
 
 ### example
 
 ```js
 var React = require('react')
-var FormFor = require('react-form-for')
-var {Field} = FormFor
+var {Form, Fields, Field} = require('react-form-for')
 
 var DateField = require('./date-field')
 var languages = require('./languages')
 
-var Form = React.createClass({
+var ExampleForm = React.createClass({
   getInitialState: function() {
     return {value: {}}
   },
@@ -28,26 +27,27 @@ var Form = React.createClass({
     var {value} = this.state
     var onChange = this.handleChange
 
-    return FormFor(value, {onChange}, (f) =>
-      <form>
-        <Field for="name" />
+    return (
+      <Form for={value} onChange={this.handleChange}>
+        <h2>A Beautiful Form</h2>
+        <Field for="name" autofocus />
         <Field for="birthday" component={DateField} help="Choose a date" />
         <Field for="language" type="select">
           {this.renderLanguageSelectOptions()}
         </Field>
-        {f.fieldsFor("address", () =>
-          <div>
+        <div className="panel collapsible">
+          <Fields for="address">
             <Field for="street" />
             <Field for="town" />
             <Field for="state" />
-          </div>
-        )}
-      </form>
+          </Fields>
+        </div>
+      </Form>
     )
   }
 })
 
-React.render(<Form />, document.body)
+React.render(<ExampleForm />, document.body)
 ```
 
 #### Custom field components
@@ -84,8 +84,9 @@ the `<Field />` proxy components used above.
 // as long as a component takes a `value` prop (and ideally a `label` prop)
 // and an `onChange` callback prop, it can be used as a react-form-for field
 Input = require('react-bootstrap/Input')
+{Form, Fields, Field} = require('react-form-for')
 
-var Form = React.createClass({
+var ExampleForm = React.createClass({
   handleChange: function(updatedValue) {
     this.setState({value: updatedValue})
   },
@@ -102,17 +103,14 @@ var Form = React.createClass({
         <Input labelClassName="col-xs-2" wrapperClassName="col-xs-10" />
       )
     }
-    return FormFor(this.state.value, formOpts, (f) =>
       // all of these fields will be rendered as a react-bootstrap/Input
-      <form className="form-horizontal">
+      <Form for={this.state.value} {...formOpts} className="form-horizontal">
         <Field for="name" />
-        <Field for="active" component={getCheckboxComponent()} />
-        {f.FieldsFor('financial', () =>
-          <div>
-            <Field for="account_balance" addonBefore="$" />
-          </div>
-        )}
-      </form>
+        <Field for="active" component={this.getCheckboxComponent()} />
+        <Fields for="financial_stuff"
+          <Field for="account_balance" addonBefore="$" />
+        </Fields>
+      </Form>
     )
   }
 })

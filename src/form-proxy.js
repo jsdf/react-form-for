@@ -18,9 +18,9 @@ var FormProxy = React.createClass({
       children: this.renderFormChildren(),
     })
     if (this.isRoot()) {
-      return React.createElement('form', formProps)
+      return React.DOM.form(formProps)
     } else {
-      return React.createElement('div', formProps)
+      return React.DOM.div(formProps)
     }
   },
 })

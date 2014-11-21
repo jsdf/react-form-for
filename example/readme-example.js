@@ -1,6 +1,6 @@
 var React = require('react')
 var FormFor = require('../')
-var {Field} = require('../')
+var {Form, Fields, Field} = require('../')
 var languages = [
   'English',
   'Spanish',
@@ -9,7 +9,7 @@ var languages = [
   'Japanese',
 ]
 
-var Form = React.createClass({
+var PersonForm = React.createClass({
   getInitialState: function() {
     return {value: {}}
   },
@@ -17,34 +17,32 @@ var Form = React.createClass({
     this.setState({value: updatedValue})
   },
   renderLanguageSelectOptions: function() {
-    return languages.map((name) => <option key={name} value={name}>{name}</option>)
+    return languages.map((name) =>
+      <option key={name} value={name}>{name}</option>
+    )
   },
   render: function() {
     var {value} = this.state
     var onChange = this.handleChange
 
-    return FormFor(value, {onChange}, (f) =>
-      <form style={{display: 'flex', flexDirection: 'column', height: '100vh'}}>
-        <Field for="name" />
-        <Field for="birthday" type="date" />
+    return (
+      <Form for={value} onChange={this.handleChange}>
+        <h2>A Beautiful Form</h2>
+        <Field for="name" autofocus />
+        <Field for="birthday" component={DateField} help="Choose a date" />
         <Field for="language" type="select">
           {this.renderLanguageSelectOptions()}
         </Field>
-        {f.fieldsFor("address", () =>
-          <div style={{border: 'solid 1px black', 'padding': 10}}>
+        <div className="panel collapsible">
+          <Fields for="address">
             <Field for="street" />
             <Field for="town" />
             <Field for="state" />
-          </div>
-        )}
-        <textarea
-          readOnly
-          value={JSON.stringify(this.state.value, null, 2)}
-          style={{width: '100vw', flex: 1}}
-        />
-      </form>
+          </Fields>
+        </div>
+      </Form>
     )
   }
 })
 
-React.render(<Form />, document.body)
+React.render(<PersonForm />, document.body)

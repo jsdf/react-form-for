@@ -2,8 +2,7 @@
 var React = require('react')
 var {cloneWithProps} = require('react/addons').addons
 
-var {extend} = require('./util')
-var omit = require('lodash.omit')
+var {extend, omit} = require('./util')
 var memoize = require('lodash.memoize')
 
 var {humanize} = require('./inflection')
@@ -33,7 +32,7 @@ var FieldProxy = React.createClass({
     var updatedValue
     var {form} = this.props
     var name = this.getName()
-    if (isObject(e) && e.target) {
+    if (e && typeof e == 'object' && e.target) {
       if (e.stopPropagation) e.stopPropagation()
       updatedValue = e.target.value
     } else {
@@ -52,7 +51,7 @@ var FieldProxy = React.createClass({
     return extend(omit(this.props, 'for'), {value, name, type, onChange, label})
   },
   render: function() {
-    if (!this.props.form) return <span>no form for {this.getName()}</span>
+    if (!this.props.form) throw new Error(`no form for ${this.getName()}`)
     var component = this.props.component || this.props.form.fieldComponent
 
     return createComponent(component, this.getComponentProps())
