@@ -1,3 +1,4 @@
+/** @jsx React.DOM */
 var React = require('react')
 var FormFor = require('../')
 var {Form, Fields, Field} = require('../')

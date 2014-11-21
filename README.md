@@ -83,8 +83,8 @@ the `<Field />` proxy components used above.
 ```js
 // as long as a component takes a `value` prop (and ideally a `label` prop)
 // and an `onChange` callback prop, it can be used as a react-form-for field
-Input = require('react-bootstrap/Input')
-{Form, Fields, Field} = require('react-form-for')
+var Input = require('react-bootstrap/Input')
+var {Form, Fields, Field} = require('react-form-for')
 
 var ExampleForm = React.createClass({
   handleChange: function(updatedValue) {

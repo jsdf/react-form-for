@@ -1,3 +1,4 @@
+/** @jsx React.DOM */
 var React = require('react')
 var {Form, Fields, Field} = require('../lib/index')
 var ExampleForm = React.createClass({

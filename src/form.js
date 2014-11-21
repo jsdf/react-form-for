@@ -74,14 +74,19 @@ class Form {
       // a nested form fieldset, delegates to the top level form
       if (!(delegateForm instanceof Form)) throw new Error('invalid delegateForm')
       this.delegateForm = delegateForm
-      this.subject = this.delegateForm.getFieldValue(name) || {}
+      this.value = this.delegateForm.getValueFor(name) || {}
       this.path = this.delegateForm.path.concat(name)
+      this.labels = this.delegateForm.getLabelFor(name)
+      this.externalValidation = this.delegateForm.getMetadataFor('externalValidation', name)
+      this.hints = this.delegateForm.getMetadataFor('hints', name)
     } else {
       // the top level form
-      this.subject = value || {}
+      this.value = value || {}
       this.path = []
-      this.fieldComponent = props.fieldComponent || Field
       this.onChange = props.onChange
+      this.labels = props.labels
+      this.externalValidation = props.externalValidation
+      this.hints = props.hints
     }
     this.fieldComponent = (
       props.fieldComponent
@@ -101,11 +106,17 @@ class Form {
     if (this.delegateForm) return this.delegateForm.applyUpdate(value, path)
 
     if (isFunction(this.onChange)) {
-      this.onChange(updateIn(this.subject, path, value))
+      this.onChange(updateIn(this.value, path, value))
     }
   }
-  getFieldValue(name) {
-    return this.subject[name]
+  getValueFor(name) {
+    return this.value[name]
+  }
+  getLabelFor(name) {
+    return this.labels && this.labels[name]
+  }
+  getMetadataFor(type, name) {
+    return this[type] && this[type][name]
   }
 }
 

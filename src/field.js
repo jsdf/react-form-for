@@ -8,6 +8,7 @@ var Field = React.createClass({
   propTypes: {
     type: React.PropTypes.string,
     label: React.PropTypes.any,
+    validation: React.PropTypes.any,
     help: React.PropTypes.any,
     hint: React.PropTypes.any,
     groupClassName: React.PropTypes.string,
@@ -56,11 +57,20 @@ var Field = React.createClass({
     return input
   },
 
-  renderHelp: function() {
-    var help = this.props.help || this.props.hint
-    return help ? (
-      <span key="help">
-        {help}
+  renderHint: function() {
+    var hint = this.props.help || this.props.hint
+    return hint ? (
+      <span key="hint" className="field-hint">
+        {hint}
+      </span>
+    ) : null
+  },
+
+  renderErrorMessage: function() {
+    var errorMessage = this.props.validation
+    return errorMessage ? (
+      <span key="errorMessage" className="field-error-message">
+        {errorMessage}
       </span>
     ) : null
   },
@@ -83,8 +93,9 @@ var Field = React.createClass({
   },
 
   renderFieldWrapper: function(children) {
-    var fieldClassName = this.props.groupClassName || this.props.fieldClassName
-    return <div className={fieldClassName} children={children} />
+    var fieldClasses = [this.props.groupClassName || this.props.fieldClassName]
+    if (this.props.validation) fieldClasses.push('field-with-errors')
+    return <div className={fieldClasses.join(' ')} children={children} />
   },
 
   render: function() {
@@ -92,7 +103,8 @@ var Field = React.createClass({
       this.renderLabel(),
       this.renderWrapper([
         this.renderInput(),
-        this.renderHelp(),
+        this.renderHint(),
+        this.renderErrorMessage(),
       ])
     ])
   }

@@ -44,12 +44,14 @@ var FieldProxy = React.createClass({
   getComponentProps: function() {
     var {form, type} = this.props
     var name = this.getName()
-    var label = this.props.label || labelForName(name)
-    var value = form.getFieldValue(name)
+    var label = this.props.label || form.getLabelFor(name) || labelForName(name)
+    var value = form.getValueFor(name)
+    var validation = form.getMetadataFor('externalValidation', name)
+    var hint = form.getMetadataFor('hint', name)
     var id = `field_${this._rootNodeID}`
     var onChange = this.handleChange
 
-    return extend(omit(this.props, 'for'), {value, name, type, onChange, label, id})
+    return extend(omit(this.props, 'for'), {value, name, type, onChange, label, validation, id})
   },
   render: function() {
     if (!this.props.form) throw new Error(`no form for ${this.getName()}`)

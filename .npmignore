@@ -1,6 +1,7 @@
 src/
 test/
 example/
+jest-preprocessor.js
 Makefile
 *.sh
 .module-cache

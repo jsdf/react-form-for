@@ -1,7 +1,8 @@
-{Form, Fields, Field} = require('react-form-for')
+/** @jsx React.DOM */
+var {Form, Fields, Field} = require('react-form-for')
 // any component which takes a `value` prop (and ideally a `label` prop)
 // and an `onChange` callback prop, can be used as a react-form-for field
-Input = require('react-bootstrap/Input')
+var Input = require('react-bootstrap/Input')
 
 var ExampleForm = React.createClass({
   handleChange: function(updatedValue) {
@@ -22,7 +23,7 @@ var ExampleForm = React.createClass({
     }
     // all of these fields will be rendered as a react-bootstrap/Input
     return (
-      <Form for={this.state.value} {...formOpts} className="form-horizontal"
+      <Form for={this.state.value} {...formOpts} className="form-horizontal">
         <Field for="name" />
         <Field for="active" component={this.getCheckboxComponent()} />
         <Fields for="financial_stuff">

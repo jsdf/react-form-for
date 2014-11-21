@@ -10,5 +10,6 @@ build:
 
 demo: build
 	mkdir -p example/output/
-	$(BROWSERIFY) example/index.js > example/output/bundle.js
+
+	$(BROWSERIFY) -t [ reactify --harmony ] example/demo.js > example/output/bundle.js
 	cp $(BOOTSTRAP) example/output/
