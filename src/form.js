@@ -25,8 +25,10 @@ function isFormProxy(node) {
   return getType(node) === FormProxy.type
 }
 
-function noChildrenError() {
-  throw new Error('form/fieldset without children not valid')
+function NoChildrenError() {
+  var err = new Error('form/fieldset without children not valid')
+  err.name = 'NoChildrenError'
+  return err
 }
 
 // recursive map over children and inject form prop
@@ -99,7 +101,7 @@ class Form {
       // traverse component children and inject form prop
       return getChildrenWithForm(this.component, this)
     } else {
-      noChildrenError()
+      throw NoChildrenError()
     }
   }
   applyUpdate(value, path) {

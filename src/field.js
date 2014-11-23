@@ -1,6 +1,7 @@
 /** @jsx React.DOM */
 var React = require('react')
 var {omit, extend} = require('./util')
+var {classSet} = require('react/addons').addons
 
 // a subset of react-bootstrap/Input, without any bootstrapisms
 // most importantly it accepts value and label props and an onChange callback
@@ -93,9 +94,14 @@ var Field = React.createClass({
   },
 
   renderFieldWrapper: function(children) {
-    var fieldClasses = [this.props.groupClassName || this.props.fieldClassName]
-    if (this.props.validation) fieldClasses.push('field-with-errors')
-    return <div className={fieldClasses.join(' ')} children={children} />
+    var fieldClassName = this.props.groupClassName || this.props.fieldClassName
+    var fieldClassSet = {
+      'rff-field': true,
+      'rff-field-with-errors': this.props.validation,
+    }
+    if (fieldClassName) fieldClassSet[fieldClassName] = true
+
+    return <div className={classSet(fieldClassSet)} children={children} />
   },
 
   render: function() {

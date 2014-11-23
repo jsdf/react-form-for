@@ -1,26 +1,19 @@
 /** @jsx React.DOM */
-var React = require('react')
-var {isString, omit, extend} = require('./util')
+var React = require('react/addons')
+var {classSet} = React.addons
 
-var API_PROPS = ['for','name','value','formDelegate']
+var FormProxyMixin = require('./form-proxy-mixin')
 
 var FormProxy = React.createClass({
-  isRoot: function() {
-    var Form = require('./form')
-    return Boolean(Form.getValue(this))
-  },
-  renderFormChildren: function() {
-    var Form = require('./form')
-    return new Form(this, this.props.delegateForm).getChildren()
-  },
+  mixins: [FormProxyMixin],
   render: function() {
-    var formProps = extend(omit(this.props, API_PROPS), {
-      children: this.renderFormChildren(),
-    })
-    if (this.isRoot()) {
-      return React.DOM.form(formProps)
+    var formProps = this.getFormProps()
+    if (this.isTopLevelForm()) {
+      formProps.className = classSet(this.props.className, 'rff-form')
+      return this.props.component ? createElementFrom(component, formProps) : React.DOM.form(formProps)
     } else {
-      return React.DOM.div(formProps)
+      formProps.className = classSet(this.props.className, 'rff-fieldset')
+      return this.props.component ? createElementFrom(component, formProps) : React.DOM.div(formProps)
     }
   },
 })
