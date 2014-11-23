@@ -35,26 +35,26 @@ describe('form-example', function() {
     var expectedFormatted = (
 `<form class=" rff-form">
   <div class="rff-field">
-    <label for="rff-field-name-input-1">Name</label>
-    <input type="text" value="James" label="Name" id="rff-field-name-input-1">
+    <label for="rff-field-input-1">Name</label>
+    <input type="text" value="James" label="Name" id="rff-field-input-1" class="field-name">
   </div>
   <div class="rff-field">
-    <label for="rff-field-from_date-input-2">From date</label>
-    <input type="text" value="2012-1-1" label="From date" id="rff-field-from_date-input-2">
+    <label for="rff-field-input-2">From date</label>
+    <input type="text" value="2012-1-1" label="From date" id="rff-field-input-2" class="field-from_date">
   </div>
   <div class="rff-field">
-    <label for="rff-field-to_date-input-3">To date</label>
-    <input type="text" value="2012-21-31" label="To date" id="rff-field-to_date-input-3">
+    <label for="rff-field-input-3">To date</label>
+    <input type="text" value="2012-21-31" label="To date" id="rff-field-input-3" class="field-to_date">
   </div>
   <div class="wrapper-container">
     <div class="related-stuff rff-fieldset">
       <div class="rff-field">
-        <label for="rff-field-related-something-input-4">SomeThing</label>
-        <input label="SomeThing" type="text" value="1" id="rff-field-related-something-input-4">
+        <label for="rff-field-input-4">SomeThing</label>
+        <input label="SomeThing" type="text" value="1" id="rff-field-input-4" class="field-related-something">
       </div>
       <div class="rff-field">
-        <label for="rff-field-related-something_else-input-5">Something else</label>
-        <input type="text" value="3" label="Something else" id="rff-field-related-something_else-input-5">
+        <label for="rff-field-input-5">Something else</label>
+        <input type="text" value="3" label="Something else" id="rff-field-input-5" class="field-related-something_else">
       </div>
     </div>
   </div>

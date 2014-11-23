@@ -40,10 +40,11 @@ var FieldProxy:any = React.createClass({
     var value = form.getValueFor(name)
     var validation = form.getExternalValidationFor(name)
     var hint = form.getHintsFor(name)
-    var id = `rff-field-${this.getPathWithName().join('-')}-input-${uniqueId(null)}`
+    var id = `rff-field-input-${uniqueId(null)}`
+    var className = `field-${this.getPathWithName().join('-')}`
     var onChange = this.handleChange
 
-    return extend(omit(this.props, 'for'), {value, name, type, onChange, label, validation, id})
+    return extend(omit(this.props, 'for'), {value, name, type, onChange, label, validation, id, className})
   },
   render() {
     if (!this.props.form) throw new Error(`no form for ${this.getName()}`)
