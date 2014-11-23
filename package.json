@@ -4,12 +4,12 @@
   "description": "A simple form builder for React in the style of Rails' form_for",
   "main": "./lib/index.js",
   "scripts": {
-    "test": "npm run prepublish && jest",
+    "test": "npm run prepublish && flow check && jest",
     "jest": "jest",
     "watch": "node tasks/watch test src/ example/",
     "demo": "make demo",
     "demo-run": "open http://0.0.0.0:8080/ && http-server example/",
-    "prepublish": "jsx --harmony src/ lib/"
+    "prepublish": "jsx --strip-types --harmony src/ lib/"
   },
   "author": "James Friend <james@jsdf.co>",
   "license": "MIT",
@@ -37,6 +37,7 @@
   },
   "dependencies": {
     "xtend": "^4.0.0",
-    "lodash.memoize": "^2.4.1"
+    "lodash.memoize": "^2.4.1",
+    "react-tools": "^0.12.1"
   }
 }

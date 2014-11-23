@@ -1,23 +1,24 @@
-/** @jsx React.DOM */
+/* @flow */
 var React = require('react')
 var {isString, omit, extend} = require('./util')
-
-var API_PROPS = ['for','name','value','formDelegate']
-
 var createElementFrom = require('./create-element-from')
+var Form = require('./form') // avoid circular require
 
-var FormProxyMixin = {
-  isTopLevelForm: function() {
-    var Form = require('./form') // avoid circular require
-    return Boolean(Form.getValue(this))
+var API_PROPS = ['for', 'name', 'value', 'formDelegate']
+
+var FormProxyMixin:any = {
+  statics: {
+    isFormProxy: true,
   },
-  renderFormChildren: function() {
-    var Form = require('./form') // avoid circular require
+  isTopLevelForm():boolean {
+    return Boolean(Form.getValueFromComponent(this))
+  },
+  renderFormChildren():any {
     return new Form(this, this.props.delegateForm).getChildren()
   },
-  getFormProps: function() {
+  getFormProps():Object {
     var formProps = omit(this.props, API_PROPS)
-    formProps.children = this.renderFormChildren()
+    formProps['children'] = this.renderFormChildren()
     return formProps
   },
 }

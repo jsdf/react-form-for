@@ -1,11 +1,11 @@
 #!/usr/bin/env node
-
 spawn = require('child_process').spawn
 exec = require('child_process').exec
 chokidar = require('chokidar')
 
 command = process.argv[2]
 pathsToWatch = process.argv.slice(3)
+bellOnError = process.argv.indexOf('--bell') < -1
 
 runningCommand = false
 
@@ -23,12 +23,18 @@ exec('git rev-parse --show-toplevel', function(err, stdout, stderr) {
       console.log('running npm run '+command)
       runningCommand = true
       spawn('npm', ['run', command], {stdio: 'inherit'})
-        .on('exit', function() {
+        .on('exit', function(code) {
+          if (code != 0) bell()
           runningCommand = false
         })
         .on('error', function(err) {
           runningCommand = false
+          bell()
           console.error(err)
         })
     })
 })
+
+function bell() {
+  if (bellOnError) process.stdout.write('\x07')
+}

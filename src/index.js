@@ -1,3 +1,4 @@
+/* @flow */
 var Form = require('./form-proxy')
 var Field = require('./field-proxy')
 // aliases

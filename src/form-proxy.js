@@ -1,19 +1,21 @@
-/** @jsx React.DOM */
+/* @flow */
 var React = require('react/addons')
 var {classSet} = React.addons
-
 var FormProxyMixin = require('./form-proxy-mixin')
+var createElementFrom = require('./create-element-from')
 
 var FormProxy = React.createClass({
-  mixins: [FormProxyMixin],
-  render: function() {
+  mixins: [
+    FormProxyMixin,
+  ],
+  render() {
     var formProps = this.getFormProps()
     if (this.isTopLevelForm()) {
       formProps.className = classSet(this.props.className, 'rff-form')
-      return this.props.component ? createElementFrom(component, formProps) : React.DOM.form(formProps)
+      return this.props.component ? createElementFrom(this.props.component, formProps) : React.DOM.form(formProps)
     } else {
       formProps.className = classSet(this.props.className, 'rff-fieldset')
-      return this.props.component ? createElementFrom(component, formProps) : React.DOM.div(formProps)
+      return this.props.component ? createElementFrom(this.props.component, formProps) : React.DOM.div(formProps)
     }
   },
 })

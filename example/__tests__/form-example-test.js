@@ -1,10 +1,11 @@
 /** @jsx React.DOM */
 jest.autoMockOff()
-var $ = require('jquery')
+var jQuery = require('jquery')
 var beautify = require('js-beautify')
 
 var FIELD_ID = /\s+?(for|id)="[^"]*"/g
 
+// integration test for the whole thing
 describe('form-example', function() {
   it('renders the form', function() {
     var React = require('react/addons')
@@ -29,7 +30,11 @@ describe('form-example', function() {
   })
 
   it('produces expected output', function() {
-    var expected = (
+    var React = require('react/addons')
+    var ExampleForm = require('../form-example.js')
+
+    // expected output formatted for readability with variable ids stripped
+    var expectedFormatted = (
 `<form class=" rff-form">
   <div class="rff-field">
     <label>Name</label>
@@ -58,13 +63,11 @@ describe('form-example', function() {
 </form>`
     )
 
-    var React = require('react/addons')
-    var ExampleForm = require('../form-example.js')
     var result = React.renderToStaticMarkup(React.createElement(ExampleForm))
 
     var resultFormatted = beautify.html(result.replace(FIELD_ID, ''), {indent_size: 2})
 
-    expect(resultFormatted).toEqual(expected)
+    expect(resultFormatted).toEqual(expectedFormatted)
   })
 })
 
@@ -73,16 +76,16 @@ function assertHasLabelAndInputWithValue(tree, label, value) {
   expect(input.value).toEqual(value)
 }
 
-function inputForLabel(tree, label) {
-  var $label = $(tree).find(`label:contains("${label}")`)
-  expect($label.get(0)).not.toBeNull()
-  var labelFor = $label.attr('for')
-  var $input = $(tree).find('#'+jQuerySelectorEscape(labelFor))
-  expect($input.get(0)).not.toBeNull()
-  return $input.get(0)
+function inputForLabel(tree, labelText) {
+  var label = jQuery(tree).find(`label:contains("${labelText}")`).get(0)
+  expect(label).not.toBeNull()
+  var labelForId = label.htmlFor
+  var input = tree.querySelector('#'+selectorEscape(labelForId))
+  expect(input).not.toBeNull()
+  return input
 }
 
-// Escapes special characters and returns a valid jQuery selector
-function jQuerySelectorEscape(str) {
+// escapes special characters and returns a valid selector
+function selectorEscape(str) {
   return str.replace(/([;&,\.\+\*\~':"\!\^#$%@\[\]\(\)=>\|])/g, '\\$1')
 }

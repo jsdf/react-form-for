@@ -1,4 +1,4 @@
-/** @jsx React.DOM */
+/* @flow */
 var React = require('react')
 var {omit, extend} = require('./util')
 var {classSet} = require('react/addons').addons
@@ -18,21 +18,17 @@ var Field = React.createClass({
     labelClassName: React.PropTypes.string,
     onChange: React.PropTypes.func
   },
-
-  getInputDOMNode: function() {
+  getInputDOMNode():any {
     return this.refs.input.getDOMNode()
   },
-
-  getValue: function() {
-    if (this.props.type) return this.getInputDOMNode().value
-    else throw Error('Cannot use getValue without specifying input type.')
+  getValue():string {
+    if (typeof this.props.type == 'string') return this.getInputDOMNode().value
+    else throw new Error('Cannot use getValue without specifying input type.')
   },
-
-  getChecked: function() {
-    return this.getInputDOMNode().checked
+  getChecked():boolean {
+    return Boolean(this.getInputDOMNode().checked)
   },
-
-  renderInput: function() {
+  renderInput():any {
     var input = null
 
     if (!this.props.type) {
@@ -57,8 +53,7 @@ var Field = React.createClass({
 
     return input
   },
-
-  renderHint: function() {
+  renderHint():any {
     var hint = this.props.help || this.props.hint
     return hint ? (
       <span key="hint" className="field-hint">
@@ -66,8 +61,7 @@ var Field = React.createClass({
       </span>
     ) : null
   },
-
-  renderErrorMessage: function() {
+  renderErrorMessage():any {
     var errorMessage = this.props.validation
     return errorMessage ? (
       <span key="errorMessage" className="field-error-message">
@@ -75,16 +69,14 @@ var Field = React.createClass({
       </span>
     ) : null
   },
-
-  renderWrapper: function(children) {
+  renderWrapper(children:any):any {
     return this.props.wrapperClassName ? (
       <div className={this.props.wrapperClassName} key="wrapper">
         {children}
       </div>
     ) : children
   },
-
-  renderLabel: function(children) {
+  renderLabel(children:any):any {
     return this.props.label ? (
       <label htmlFor={this.props.id} className={this.props.labelClassName} key="label">
         {children}
@@ -92,21 +84,18 @@ var Field = React.createClass({
       </label>
     ) : children
   },
-
-  renderFieldWrapper: function(children) {
+  renderFieldWrapper(children:any):any {
     var fieldClassName = this.props.groupClassName || this.props.fieldClassName
     var fieldClassSet = {
       'rff-field': true,
       'rff-field-with-errors': this.props.validation,
     }
     if (fieldClassName) fieldClassSet[fieldClassName] = true
-
     return <div className={classSet(fieldClassSet)} children={children} />
   },
-
-  render: function() {
+  render():any {
     return this.renderFieldWrapper([
-      this.renderLabel(),
+      this.renderLabel(null),
       this.renderWrapper([
         this.renderInput(),
         this.renderHint(),

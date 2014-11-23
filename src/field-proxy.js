@@ -1,25 +1,22 @@
-/** @jsx React.DOM */
+/* @flow */
 var React = require('react')
-
-var {extend, omit} = require('./util')
-var memoize = require('lodash.memoize')
-
+var {extend, omit, uniqueId} = require('./util')
 var createElementFrom = require('./create-element-from')
+var labelForName = require('./label-for-name')
 
-var {humanize} = require('./inflection')
-
-var labelForName = memoize(humanize)
-
-var FieldProxy = React.createClass({
-  getDefaultProps: function() {
+var FieldProxy:any = React.createClass({
+  statics: {
+    isFieldProxy: true,
+  },
+  getDefaultProps() {
     return {
       type: 'text',
     }
   },
-  getName: function() {
+  getName() {
     return this.props.for || this.props.name
   },
-  handleChange: function (e) {
+  handleChange (e) {
     var updatedValue
     var {form} = this.props
     var name = this.getName()
@@ -32,19 +29,20 @@ var FieldProxy = React.createClass({
 
     form.applyUpdate(updatedValue, form.path.concat(name))
   },
-  getComponentProps: function() {
-    var {form, type} = this.props
+  getComponentProps() {
+    var {form} = this.props
+    var type = this.props.inputType || this.props.type
     var name = this.getName()
     var label = this.props.label || form.getLabelFor(name) || labelForName(name)
     var value = form.getValueFor(name)
-    var validation = form.getMetadataFor('externalValidation', name)
-    var hint = form.getMetadataFor('hint', name)
-    var id = `field_${this._rootNodeID}`
+    var validation = form.getExternalValidationFor(name)
+    var hint = form.getHintsFor(name)
+    var id = `field_${this.props.form.path.join('_')}_input_${uniqueId(null)}`
     var onChange = this.handleChange
 
     return extend(omit(this.props, 'for'), {value, name, type, onChange, label, validation, id})
   },
-  render: function() {
+  render() {
     if (!this.props.form) throw new Error(`no form for ${this.getName()}`)
     var component = this.props.component || this.props.form.fieldComponent
 

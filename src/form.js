@@ -1,12 +1,8 @@
+/* @flow weak */
 var React = require('react')
 var {cloneWithProps} = require('react/addons').addons
-
-var {updateIn, extend, isFunction, isString} = require('./util')
-
+var {updateIn, extend, isString} = require('./util')
 var Field = require('./field')
-var FieldProxy = require('./field-proxy')
-var FormProxy = require('./form-proxy')
-
 var isElement = React.isValidElement || React.isValidComponent
 
 function hasChildren(node) {
@@ -18,11 +14,13 @@ function getType(node) {
 }
 
 function isFieldProxy(node) {
-  return getType(node) === FieldProxy.type
+  var type = getType(node)
+  return type && type.isFieldProxy
 }
 
 function isFormProxy(node) {
-  return getType(node) === FormProxy.type
+  var type = getType(node)
+  return type && type.isFormProxy
 }
 
 function NoChildrenError() {
@@ -46,7 +44,7 @@ function getChildrenWithForm(node, form) {
     var updatedProps = {}
 
     if (isFormProxy(child)) {
-      if (!hasChildren(child)) noChildrenError()
+      if (!hasChildren(child)) NoChildrenError()
       // stop recursion, just inject form delegateForm
       updatedProps.delegateForm = form
     } else {
@@ -62,39 +60,23 @@ function getChildrenWithForm(node, form) {
 }
 
 class Form {
-  constructor(component, delegateForm) {
-    if (!(this instanceof Form)) return new Form(component, delegateForm)
-
+  value: Object;
+  path: Array<string>;
+  onChange: Function;
+  delegateForm: Form;
+  labels: Object;
+  externalValidation: Object;
+  hints: Object;
+  fieldComponent: Object;
+  constructor(component:any, delegateForm:?Form) {
     this.component = component
-    var props = this.component.props
-    var value = Form.getValue(component)
-    var name = Form.getName(component)
-
-    if (name && !delegateForm) throw new Error('delegateForm required when name provided')
-    if (delegateForm && !name) throw new Error('name required when delegateForm provided')
-    if (delegateForm) {
+    if (delegateForm instanceof Form) {
       // a nested form fieldset, delegates to the top level form
-      if (!(delegateForm instanceof Form)) throw new Error('invalid delegateForm')
-      this.delegateForm = delegateForm
-      this.value = this.delegateForm.getValueFor(name) || {}
-      this.path = this.delegateForm.path.concat(name)
-      this.labels = this.delegateForm.getLabelFor(name)
-      this.externalValidation = this.delegateForm.getMetadataFor('externalValidation', name)
-      this.hints = this.delegateForm.getMetadataFor('hints', name)
+      this.acquireOptsFromDelegateForm(component, delegateForm)
     } else {
       // the top level form
-      this.value = value || {}
-      this.path = []
-      this.onChange = props.onChange
-      this.labels = props.labels
-      this.externalValidation = props.externalValidation
-      this.hints = props.hints
+      this.acquireOptsFromComponent(component)
     }
-    this.fieldComponent = (
-      props.fieldComponent
-      || this.delegateForm && this.delegateForm.fieldComponent
-      || Field
-    )
   }
   getChildren() {
     if (this.component.props.children) {
@@ -105,11 +87,39 @@ class Form {
     }
   }
   applyUpdate(value, path) {
-    if (this.delegateForm) return this.delegateForm.applyUpdate(value, path)
+    if (this.delegateForm instanceof Form) {
+      return this.delegateForm.applyUpdate(value, path)
+    }
 
-    if (isFunction(this.onChange)) {
+    if (this.onChange instanceof Function) {
       this.onChange(updateIn(this.value, path, value))
     }
+  }
+  acquireOptsFromComponent(component) {
+    var value = Form.getValueFromComponent(component)
+    
+    this.value = value || {}
+    this.path = []
+    this.onChange = component.props.onChange
+    this.labels = component.props.labels
+    this.externalValidation = component.props.externalValidation
+    this.hints = component.props.hints
+
+    this.fieldComponent = component.props.fieldComponent || Field
+  }
+  acquireOptsFromDelegateForm(component, delegateForm) {
+    var name = Form.getNameFromComponent(component)
+    if (delegateForm instanceof Form && name == null) throw new Error('name required when delegateForm provided')
+    if (!(delegateForm instanceof Form)) throw new Error('invalid delegateForm')
+    this.delegateForm = delegateForm
+    this.path = delegateForm.path.concat(name)
+
+    this.value = delegateForm.getValueFor(name) || {}
+    this.labels = delegateForm.getLabelFor(name)
+    this.externalValidation = delegateForm.getExternalValidationFor(name)
+    this.hints = delegateForm.getHintsFor(name)
+
+    this.fieldComponent = component.props.fieldComponent || delegateForm.fieldComponent || Field
   }
   getValueFor(name) {
     return this.value[name]
@@ -117,20 +127,22 @@ class Form {
   getLabelFor(name) {
     return this.labels && this.labels[name]
   }
-  getMetadataFor(type, name) {
-    return this[type] && this[type][name]
+  getExternalValidationFor(type, name) {
+    return this.externalValidation && this.externalValidation[name]
+  }
+  getHintsFor(name) {
+    return this.hints && this.hints[name]
   }
 }
 
-var FormClassMethods = {
-  getValue: function(component) {
+// class methods
+extend(Form, {
+  getValueFromComponent(component) {
     return component.props.value || !isString(component.props.for) && component.props.for
   },
-  getName: function(component) {
+  getNameFromComponent(component) {
     return component.props.name || isString(component.props.for) && component.props.for
   },
-}
-
-extend(Form, FormClassMethods)
+})
 
 module.exports = Form
