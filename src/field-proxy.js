@@ -16,6 +16,9 @@ var FieldProxy:any = React.createClass({
   getName() {
     return this.props.for || this.props.name
   },
+  getPathWithName():Array<string> {
+    return this.props.form.path.concat(this.getName())
+  },
   handleChange (e) {
     var updatedValue
     var {form} = this.props
@@ -37,7 +40,7 @@ var FieldProxy:any = React.createClass({
     var value = form.getValueFor(name)
     var validation = form.getExternalValidationFor(name)
     var hint = form.getHintsFor(name)
-    var id = `field_${this.props.form.path.join('_')}_input_${uniqueId(null)}`
+    var id = `rff-field-${this.getPathWithName().join('-')}-input-${uniqueId(null)}`
     var onChange = this.handleChange
 
     return extend(omit(this.props, 'for'), {value, name, type, onChange, label, validation, id})
