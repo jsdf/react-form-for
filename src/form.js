@@ -1,4 +1,4 @@
-/* @flow weak */
+/* @flow */
 var React = require('react')
 var {cloneWithProps} = require('react/addons').addons
 var {updateIn, extend, isString} = require('./util')
@@ -62,13 +62,14 @@ function getChildrenWithForm(node, form) {
 class Form {
   value: Object;
   path: Array<string>;
+  component: ReactComponent;
   onChange: Function;
   delegateForm: Form;
   labels: Object;
   externalValidation: Object;
   hints: Object;
-  fieldComponent: Object;
-  constructor(component:any, delegateForm:?Form) {
+  fieldComponent: ReactClass|ReactComponent;
+  constructor(component:ReactComponent, delegateForm:?Form) {
     this.component = component
     if (delegateForm instanceof Form) {
       // a nested form fieldset, delegates to the top level form
@@ -86,16 +87,17 @@ class Form {
       throw NoChildrenError()
     }
   }
-  applyUpdate(value, path) {
+  applyUpdate(value:Object, path:Array<string>) {
     if (this.delegateForm instanceof Form) {
-      return this.delegateForm.applyUpdate(value, path)
+      this.delegateForm.applyUpdate(value, path)
+      return
     }
 
     if (this.onChange instanceof Function) {
       this.onChange(updateIn(this.value, path, value))
     }
   }
-  acquireOptsFromComponent(component) {
+  acquireOptsFromComponent(component:ReactComponent) {
     var value = Form.getValueFromComponent(component)
     
     this.value = value || {}
@@ -107,7 +109,7 @@ class Form {
 
     this.fieldComponent = component.props.fieldComponent || Field
   }
-  acquireOptsFromDelegateForm(component, delegateForm) {
+  acquireOptsFromDelegateForm(component:ReactComponent, delegateForm:Form) {
     var name = Form.getNameFromComponent(component)
     if (delegateForm instanceof Form && name == null) throw new Error('name required when delegateForm provided')
     if (!(delegateForm instanceof Form)) throw new Error('invalid delegateForm')
@@ -121,16 +123,16 @@ class Form {
 
     this.fieldComponent = component.props.fieldComponent || delegateForm.fieldComponent || Field
   }
-  getValueFor(name) {
+  getValueFor(name:string):any {
     return this.value[name]
   }
-  getLabelFor(name) {
+  getLabelFor(name:string):any {
     return this.labels && this.labels[name]
   }
-  getExternalValidationFor(type, name) {
+  getExternalValidationFor(name:string):any {
     return this.externalValidation && this.externalValidation[name]
   }
-  getHintsFor(name) {
+  getHintsFor(name:string):any {
     return this.hints && this.hints[name]
   }
 }
