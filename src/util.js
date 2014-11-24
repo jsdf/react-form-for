@@ -9,18 +9,8 @@ function clone(source:Object):Object {
   return extend({}, source)
 }
 
-function isString(subject:any):boolean {
-  return typeof subject === 'string'
-}
-
-function bind(fn:Function, me:Object):Function {
-  return () => fn.apply(me, arguments)
-}
-
-function bindAll(obj:Object, ...methods:Array<string>):void {
-  methods.forEach(function(methodName) {
-    obj[methodName] = bind(obj[methodName], obj)
-  })
+function merge(...sources:Array<Object>):Object {
+  return extend.apply(null, [{}].concat(sources))
 }
 
 function contains(haystack:any, needle:any):any {
@@ -72,4 +62,4 @@ function updateIn(object:Object, path:Array<string>, value:any):Object {
   return updated
 }
 
-module.exports = {bind, bindAll, updateIn, clone, extend, omit, pick, contains, isString, uniqueId}
+module.exports = {updateIn, clone, extend, merge, omit, pick, contains, uniqueId}

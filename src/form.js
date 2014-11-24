@@ -1,7 +1,7 @@
 /* @flow */
 var React = require('react')
 var {cloneWithProps} = require('react/addons').addons
-var {updateIn, extend, isString} = require('./util')
+var {updateIn, extend} = require('./util')
 var Field = require('./field')
 var isElement = React.isValidElement || React.isValidComponent
 
@@ -123,28 +123,36 @@ class Form {
 
     this.fieldComponent = component.props.fieldComponent || delegateForm.fieldComponent || Field
   }
-  getValueFor(name:string):any {
+  getValueFor(name:?string):any {
     return this.value[name]
   }
-  getLabelFor(name:string):any {
-    return this.labels && this.labels[name]
+  getLabelFor(name:?string):any {
+    return this.labels instanceof Object ? this.labels[name] : null
   }
-  getExternalValidationFor(name:string):any {
-    return this.externalValidation && this.externalValidation[name]
+  getExternalValidationFor(name:?string):any {
+    return this.externalValidation instanceof Object ? this.externalValidation[name] : null
   }
-  getHintsFor(name:string):any {
-    return this.hints && this.hints[name]
+  getHintsFor(name:?string):any {
+    return this.hints instanceof Object ? this.hints[name] : null
+  }
+  static getValueFromComponent(component:ReactComponent):?Object {
+    if (component.props.value instanceof Object) {
+      return component.props.value
+    } else if (component.props.for instanceof Object) {
+      return component.props.for
+    } else {
+      return null
+    }
+  }
+  static getNameFromComponent(component:ReactComponent):?string {
+    if (typeof component.props.name == 'string') {
+      return component.props.name  
+    } else if (typeof component.props.for == 'string') {
+      return component.props.for
+    } else {
+      return null
+    }
   }
 }
-
-// class methods
-extend(Form, {
-  getValueFromComponent(component) {
-    return component.props.value || !isString(component.props.for) && component.props.for
-  },
-  getNameFromComponent(component) {
-    return component.props.name || isString(component.props.for) && component.props.for
-  },
-})
 
 module.exports = Form
