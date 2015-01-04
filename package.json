@@ -3,6 +3,20 @@
   "version": "1.0.3",
   "description": "A simple form builder for React in the style of Rails' form_for",
   "main": "./lib/index.js",
+  "author": "James Friend <james@jsdf.co>",
+  "license": "MIT",
+  "homepage": "https://github.com/jsdf/react-form-for",
+  "bugs": "https://github.com/jsdf/react-form-for/issues",
+  "repository": {
+    "type": "git",
+    "url": "git://github.com/jsdf/react-form-for.git"
+  },
+  "keywords": [
+    "react",
+    "form-builder",
+    "react-component",
+    "forms"
+  ],
   "scripts": {
     "test": "npm run prepublish && flow check && jest",
     "jest": "jest",
@@ -13,19 +27,16 @@
     "dist": "npm run umd && git add dist/ && git commit -m 'umd distribution rebuild' && git push origin master",
     "prepublish": "jsx --strip-types --harmony src/ lib/"
   },
-  "author": "James Friend <james@jsdf.co>",
-  "license": "MIT",
-  "homepage": "https://github.com/jsdf/react-form-for",
-  "bugs": "https://github.com/jsdf/react-form-for/issues",
-  "repository": {
-    "type": "git",
-    "url": "git://github.com/jsdf/react-form-for.git"
-  },
   "jest": {
     "scriptPreprocessor": "<rootDir>/jest-preprocessor.js",
     "unmockedModulePathPatterns": [
       "<rootDir>/node_modules"
     ]
+  },
+  "dependencies": {
+    "xtend": "^4.0.0",
+    "lodash.memoize": "^2.4.1",
+    "react-tools": "^0.12.1"
   },
   "devDependencies": {
     "react": "0.12.0",
@@ -36,10 +47,5 @@
     "reactify": "^0.17.0",
     "js-beautify": "^1.5.4",
     "chokidar": "^0.11.1"
-  },
-  "dependencies": {
-    "xtend": "^4.0.0",
-    "lodash.memoize": "^2.4.1",
-    "react-tools": "^0.12.1"
   }
 }
