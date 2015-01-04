@@ -2,7 +2,6 @@ src/
 test/
 example/
 tasks/
-dist/
 jest-preprocessor.js
 Makefile
 *.sh
