@@ -42,25 +42,16 @@ var TeamForm = React.createClass({
 
     return (
       <Form for={value} onChange={this.handleChange}>
-        <h2>A Team Called <Value for="name" fn={(v) => <span>{v}</span>} /></h2>
+        <h2>A Team Called <Value for="name" /></h2>
 
-        <Each for="members">
+        <List for="members">
           <Field for="name" />
-          <NumberField for="age" />
-          <div>
-            <Label for="interests">
-            <Value for="interests" fn={(v, context) => <span>{context.hint}</span>}>
-            <ul>
-              <EachValue for="interests" fn={(v) => <li>{v}</li>} />
-              <Each for="interests">
-                <li><Value /></li>
-              </Each>
-            </ul>
-          </div>
-        </Each>
+          <Field for="age" type="number" hint="Age ain't nothin but a number" />
+          <List for="interests" />
+        </List>
       </Form>
     )
   }
 })
 
-React.render(<PersonForm />, document.body)
+React.render(<TeamForm />, document.body)
