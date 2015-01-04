@@ -1,5 +1,5 @@
 /* @flow */
-var React = require('react')
+var React = require('./react')
 var {omit, extend} = require('./util')
 var createElementFrom = require('./create-element-from')
 var Form = require('./form') // avoid circular require

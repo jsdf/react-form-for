@@ -1,5 +1,5 @@
 /* @flow */
-var React = require('react')
+var React = require('./react')
 var createElementFrom = require('./create-element-from')
 var FieldProxyMixin = require('./field-proxy-mixin')
 

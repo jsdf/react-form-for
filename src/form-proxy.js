@@ -1,5 +1,5 @@
 /* @flow */
-var React = require('react/addons')
+var React = require('./react')
 var {classSet} = React.addons
 var FormProxyMixin = require('./form-proxy-mixin')
 var createElementFrom = require('./create-element-from')

@@ -1,6 +1,6 @@
 /* @flow */
-var React = require('react')
-var {cloneWithProps} = require('react/addons').addons
+var React = require('./react')
+var {cloneWithProps} = require('./react').addons
 var {updateIn, extend} = require('./util')
 var Field = require('./field')
 var isElement = React.isValidElement || React.isValidComponent

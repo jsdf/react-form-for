@@ -1,5 +1,5 @@
 /* @flow */
-var React = require('react')
+var React = require('./react')
 var {extend, omit, uniqueId} = require('./util')
 var labelForName = require('./label-for-name')
 

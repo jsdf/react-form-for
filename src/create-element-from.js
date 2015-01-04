@@ -1,5 +1,5 @@
 /* @flow */
-var React = require('react/addons')
+var React = require('./react')
 var {cloneWithProps} = React.addons
 var isElement = React.isValidElement || React.isValidComponent
 

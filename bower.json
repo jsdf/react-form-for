@@ -1,0 +1,24 @@
+{
+  "name": "react-form-for",
+  "version": "1.0.1",
+  "homepage": "https://github.com/jsdf/react-form-for",
+  "authors": [
+    "James Friend <james@jsdf.co>"
+  ],
+  "description": "A simple form builder for React in the style of Rails' form_for",
+  "main": "dist/react-form-for.js",
+  "keywords": [
+    "react",
+    "form-builder",
+    "react-component",
+    "forms"
+  ],
+  "license": "MIT",
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "bower_components",
+    "test",
+    "tests"
+  ]
+}

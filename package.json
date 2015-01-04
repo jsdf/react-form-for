@@ -9,6 +9,7 @@
     "watch": "node tasks/watch test src/ example/",
     "demo": "make demo",
     "demo-run": "open http://0.0.0.0:8080/ && http-server example/",
+    "umd": "browserify ./lib/index.js --external react --standalone ReactFormFor > dist/react-form-for.js",
     "prepublish": "jsx --strip-types --harmony src/ lib/"
   },
   "author": "James Friend <james@jsdf.co>",
