@@ -1,6 +1,6 @@
 {
   "name": "react-form-for",
-  "version": "1.0.4",
+  "version": "1.0.5",
   "description": "A simple form builder for React in the style of Rails' form_for",
   "main": "./lib/index.js",
   "author": "James Friend <james@jsdf.co>",
