@@ -26,7 +26,7 @@
     "umd": "browserify ./lib/index.js --external react/addons --standalone ReactFormFor > dist/react-form-for.js",
     "dist-umd": "npm run umd; git add dist/; git commit -m 'umd distribution rebuild'",
     "dist-version": "npm version $V; git tag -d v$V; bower version $V; git push origin --tags",
-    "dist": "npm run dist-umd && npm run dist-bower && git push origin master",
+    "dist": "npm run dist-umd; echo 'version:'; read version; V=$version npm run dist-version; git push origin master",
     "prepublish": "jsx --strip-types --harmony src/ lib/"
   },
   "jest": {
