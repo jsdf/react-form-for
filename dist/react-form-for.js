@@ -1,8 +1,8 @@
-!function(e){if("object"==typeof exports&&"undefined"!=typeof module)module.exports=e();else if("function"==typeof define&&define.amd)define([],e);else{var o;"undefined"!=typeof window?o=window:"undefined"!=typeof global?o=global:"undefined"!=typeof self&&(o=self),o.ReactFormFor=e()}}(function(){var define,module,exports;return (function e(t,n,r){function s(o,u){if(!n[o]){if(!t[o]){var a=typeof require=="function"&&require;if(!u&&a)return a(o,!0);if(i)return i(o,!0);throw new Error("Cannot find module '"+o+"'")}var f=n[o]={exports:{}};t[o][0].call(f.exports,function(e){var n=t[o][1][e];return s(n?n:e)},f,f.exports,e,t,n,r)}return n[o].exports}var i=typeof require=="function"&&require;for(var o=0;o<r.length;o++)s(r[o]);return s})({1:[function(_dereq_,module,exports){
+!function(e){if("object"==typeof exports&&"undefined"!=typeof module)module.exports=e();else if("function"==typeof define&&define.amd)define([],e);else{var o;"undefined"!=typeof window?o=window:"undefined"!=typeof global?o=global:"undefined"!=typeof self&&(o=self),o.ReactFormFor=e()}}(function(){var define,module,exports;return (function e(t,n,r){function s(o,u){if(!n[o]){if(!t[o]){var a=typeof require=="function"&&require;if(!u&&a)return a(o,!0);if(i)return i(o,!0);var f=new Error("Cannot find module '"+o+"'");throw f.code="MODULE_NOT_FOUND",f}var l=n[o]={exports:{}};t[o][0].call(l.exports,function(e){var n=t[o][1][e];return s(n?n:e)},l,l.exports,e,t,n,r)}return n[o].exports}var i=typeof require=="function"&&require;for(var o=0;o<r.length;o++)s(r[o]);return s})({1:[function(require,module,exports){
 "use strict";
 
 /* @flow */
-var React = _dereq_("./react");
+var React = require("./react");
 var cloneWithProps = React.addons.cloneWithProps;
 
 var isElement = React.isValidElement || React.isValidComponent;
@@ -16,19 +16,19 @@ function createElementFrom(component, props) {
 }
 
 module.exports = createElementFrom;
-},{"./react":13}],2:[function(_dereq_,module,exports){
+},{"./react":13}],2:[function(require,module,exports){
 "use strict";
 
 /* @flow */
-var React = _dereq_("./react");
+var React = require("./react");
 
-var _require = _dereq_("./util");
+var _require = require("./util");
 
 var extend = _require.extend;
 var omit = _require.omit;
 var uniqueId = _require.uniqueId;
 
-var labelForName = _dereq_("./label-for-name");
+var labelForName = require("./label-for-name");
 
 var FieldProxyMixin = {
   statics: {
@@ -81,13 +81,13 @@ var FieldProxyMixin = {
   } };
 
 module.exports = FieldProxyMixin;
-},{"./label-for-name":10,"./react":13,"./util":14}],3:[function(_dereq_,module,exports){
+},{"./label-for-name":10,"./react":13,"./util":14}],3:[function(require,module,exports){
 "use strict";
 
 /* @flow */
-var React = _dereq_("./react");
-var createElementFrom = _dereq_("./create-element-from");
-var FieldProxyMixin = _dereq_("./field-proxy-mixin");
+var React = require("./react");
+var createElementFrom = require("./create-element-from");
+var FieldProxyMixin = require("./field-proxy-mixin");
 
 var FieldProxy = React.createClass({
   displayName: "FieldProxy",
@@ -100,18 +100,18 @@ var FieldProxy = React.createClass({
 });
 
 module.exports = FieldProxy;
-},{"./create-element-from":1,"./field-proxy-mixin":2,"./react":13}],4:[function(_dereq_,module,exports){
+},{"./create-element-from":1,"./field-proxy-mixin":2,"./react":13}],4:[function(require,module,exports){
 "use strict";
 
 /* @flow */
-var React = _dereq_("./react");
+var React = require("./react");
 
-var _require = _dereq_("./util");
+var _require = require("./util");
 
 var omit = _require.omit;
 var extend = _require.extend;
 
-var classSet = _dereq_("classnames");
+var classSet = require("classnames");
 
 // a subset of react-bootstrap/Input, without any bootstrapisms
 // most importantly it accepts value and label props and an onChange callback
@@ -211,19 +211,19 @@ var Field = React.createClass({
 });
 
 module.exports = Field;
-},{"./react":13,"./util":14,"classnames":15}],5:[function(_dereq_,module,exports){
+},{"./react":13,"./util":14,"classnames":15}],5:[function(require,module,exports){
 "use strict";
 
 /* @flow */
-var React = _dereq_("./react");
+var React = require("./react");
 
-var _require = _dereq_("./util");
+var _require = require("./util");
 
 var omit = _require.omit;
 var extend = _require.extend;
 
-var createElementFrom = _dereq_("./create-element-from");
-var Form = _dereq_("./form"); // avoid circular require
+var createElementFrom = require("./create-element-from");
+var Form = require("./form"); // avoid circular require
 
 var API_PROPS = ["for", "name", "value", "formDelegate"];
 
@@ -251,14 +251,14 @@ var FormProxyMixin = {
   } };
 
 module.exports = FormProxyMixin;
-},{"./create-element-from":1,"./form":7,"./react":13,"./util":14}],6:[function(_dereq_,module,exports){
+},{"./create-element-from":1,"./form":7,"./react":13,"./util":14}],6:[function(require,module,exports){
 "use strict";
 
 /* @flow */
-var React = _dereq_("./react");
-var classSet = _dereq_("classnames");
-var FormProxyMixin = _dereq_("./form-proxy-mixin");
-var createElementFrom = _dereq_("./create-element-from");
+var React = require("./react");
+var classSet = require("classnames");
+var FormProxyMixin = require("./form-proxy-mixin");
+var createElementFrom = require("./create-element-from");
 
 var FormProxy = React.createClass({
   displayName: "FormProxy",
@@ -279,7 +279,7 @@ var FormProxy = React.createClass({
   } });
 
 module.exports = FormProxy;
-},{"./create-element-from":1,"./form-proxy-mixin":5,"./react":13,"classnames":15}],7:[function(_dereq_,module,exports){
+},{"./create-element-from":1,"./form-proxy-mixin":5,"./react":13,"classnames":15}],7:[function(require,module,exports){
 "use strict";
 
 var _prototypeProperties = function (child, staticProps, instanceProps) { if (staticProps) Object.defineProperties(child, staticProps); if (instanceProps) Object.defineProperties(child.prototype, instanceProps); };
@@ -291,18 +291,18 @@ var _inherits = function (subClass, superClass) { if (typeof superClass !== "fun
 var _classCallCheck = function (instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } };
 
 /* @flow */
-var React = _dereq_("./react");
+var React = require("./react");
 
-var cloneWithProps = _dereq_("./react").addons.cloneWithProps;
+var cloneWithProps = require("./react").addons.cloneWithProps;
 
-var StandardError = _dereq_("standard-error");
+var StandardError = require("standard-error");
 
-var _require = _dereq_("./util");
+var _require = require("./util");
 
 var updateIn = _require.updateIn;
 var extend = _require.extend;
 
-var Field = _dereq_("./field");
+var Field = require("./field");
 var isElement = React.isValidElement || React.isValidComponent;
 
 function hasChildren(node) {
@@ -496,20 +496,20 @@ var Form = (function () {
 })();
 
 module.exports = Form;
-},{"./field":4,"./react":13,"./util":14,"standard-error":19}],8:[function(_dereq_,module,exports){
+},{"./field":4,"./react":13,"./util":14,"standard-error":19}],8:[function(require,module,exports){
 "use strict";
 
 /* @flow */
-var Form = _dereq_("./form-proxy");
-var Field = _dereq_("./field-proxy");
-var List = _dereq_("./list-proxy");
-var ListEditor = _dereq_("./list-editor");
+var Form = require("./form-proxy");
+var Field = require("./field-proxy");
+var List = require("./list-proxy");
+var ListEditor = require("./list-editor");
 // aliases
-var Fields = _dereq_("./form-proxy");
-var Fieldset = _dereq_("./form-proxy");
+var Fields = require("./form-proxy");
+var Fieldset = require("./form-proxy");
 
 module.exports = { Form: Form, Field: Field, Fields: Fields, Fieldset: Fieldset, List: List, Components: { ListEditor: ListEditor } };
-},{"./field-proxy":3,"./form-proxy":6,"./list-editor":11,"./list-proxy":12}],9:[function(_dereq_,module,exports){
+},{"./field-proxy":3,"./form-proxy":6,"./list-editor":11,"./list-proxy":12}],9:[function(require,module,exports){
 "use strict";
 
 /* @flow */
@@ -530,13 +530,13 @@ function humanize(str) {
 }
 
 module.exports = { humanize: humanize, capitalize: capitalize };
-},{}],10:[function(_dereq_,module,exports){
+},{}],10:[function(require,module,exports){
 "use strict";
 
 /* @flow */
-var memoize = _dereq_("lodash.memoize/index");
+var memoize = require("lodash.memoize/index");
 
-var _require = _dereq_("./inflection");
+var _require = require("./inflection");
 
 var humanize = _require.humanize;
 
@@ -544,20 +544,20 @@ var humanize = _require.humanize;
 var labelForName = memoize(humanize);
 
 module.exports = labelForName;
-},{"./inflection":9,"lodash.memoize/index":16}],11:[function(_dereq_,module,exports){
+},{"./inflection":9,"lodash.memoize/index":16}],11:[function(require,module,exports){
 "use strict";
 
 var _extends = Object.assign || function (target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i]; for (var key in source) { if (Object.prototype.hasOwnProperty.call(source, key)) { target[key] = source[key]; } } } return target; };
 
 /* @flow */
-var React = _dereq_("./react");
+var React = require("./react");
 
-var _require = _dereq_("./util");
+var _require = require("./util");
 
 var omit = _require.omit;
 var cloneWithProps = React.addons.cloneWithProps;
 
-var classSet = _dereq_("classnames");
+var classSet = require("classnames");
 
 var ListEditor = React.createClass({
   displayName: "ListEditor",
@@ -636,22 +636,22 @@ var ListEditor = React.createClass({
 });
 
 module.exports = ListEditor;
-},{"./react":13,"./util":14,"classnames":15}],12:[function(_dereq_,module,exports){
+},{"./react":13,"./util":14,"classnames":15}],12:[function(require,module,exports){
 "use strict";
 
 var _extends = Object.assign || function (target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i]; for (var key in source) { if (Object.prototype.hasOwnProperty.call(source, key)) { target[key] = source[key]; } } } return target; };
 
 /* @flow */
-var React = _dereq_("./react");
+var React = require("./react");
 var cloneWithProps = React.addons.cloneWithProps;
 
-var classSet = _dereq_("classnames");
-var FormProxyMixin = _dereq_("./form-proxy-mixin");
-var FieldProxyMixin = _dereq_("./field-proxy-mixin");
-var FormProxy = _dereq_("./form-proxy");
-var createElementFrom = _dereq_("./create-element-from");
+var classSet = require("classnames");
+var FormProxyMixin = require("./form-proxy-mixin");
+var FieldProxyMixin = require("./field-proxy-mixin");
+var FormProxy = require("./form-proxy");
+var createElementFrom = require("./create-element-from");
 
-var _require = _dereq_("./util");
+var _require = require("./util");
 
 var omit = _require.omit;
 var extend = _require.extend;
@@ -688,23 +688,23 @@ var ListProxy = React.createClass({
   } });
 
 module.exports = ListProxy;
-},{"./create-element-from":1,"./field-proxy-mixin":2,"./form-proxy":6,"./form-proxy-mixin":5,"./react":13,"./util":14,"classnames":15}],13:[function(_dereq_,module,exports){
+},{"./create-element-from":1,"./field-proxy-mixin":2,"./form-proxy":6,"./form-proxy-mixin":5,"./react":13,"./util":14,"classnames":15}],13:[function(require,module,exports){
 "use strict";
 
 /* @flow */
 if (typeof React == "undefined") {
-  module.exports = _dereq_("react/addons");
+  module.exports = require("react/addons");
 } else {
   if (!React.addons) {
     throw new Error("React addons build is required to use react-form-for");
   }
   module.exports = React;
 }
-},{"react/addons":"g51q1L"}],14:[function(_dereq_,module,exports){
+},{"react/addons":"react/addons"}],14:[function(require,module,exports){
 "use strict";
 
 /* @flow */
-var extend = _dereq_("xtend/mutable");
+var extend = require("xtend/mutable");
 
 var slice = Array.prototype.slice;
 var concat = Array.prototype.concat;
@@ -795,7 +795,7 @@ function updateIn(object, path, value) {
 }
 
 module.exports = { updateIn: updateIn, clone: clone, extend: extend, merge: merge, omit: omit, pick: pick, contains: contains, uniqueId: uniqueId, isArray: isArray, arrayCopy: arrayCopy };
-},{"xtend/mutable":20}],15:[function(_dereq_,module,exports){
+},{"xtend/mutable":20}],15:[function(require,module,exports){
 function classNames() {
 	var args = arguments;
 	var classes = [];
@@ -825,7 +825,7 @@ if (typeof module !== 'undefined' && module.exports) {
 	module.exports = classNames;
 }
 
-},{}],16:[function(_dereq_,module,exports){
+},{}],16:[function(require,module,exports){
 /**
  * Lo-Dash 2.4.1 (Custom Build) <http://lodash.com/>
  * Build: `lodash modularize modern exports="npm" -o ./npm/`
@@ -834,8 +834,8 @@ if (typeof module !== 'undefined' && module.exports) {
  * Copyright 2009-2013 Jeremy Ashkenas, DocumentCloud and Investigative Reporters & Editors
  * Available under MIT license <http://lodash.com/license>
  */
-var isFunction = _dereq_('lodash.isfunction'),
-    keyPrefix = _dereq_('lodash._keyprefix');
+var isFunction = require('lodash.isfunction'),
+    keyPrefix = require('lodash._keyprefix');
 
 /** Used for native method references */
 var objectProto = Object.prototype;
@@ -898,7 +898,7 @@ function memoize(func, resolver) {
 
 module.exports = memoize;
 
-},{"lodash._keyprefix":17,"lodash.isfunction":18}],17:[function(_dereq_,module,exports){
+},{"lodash._keyprefix":17,"lodash.isfunction":18}],17:[function(require,module,exports){
 /**
  * Lo-Dash 2.4.2 (Custom Build) <http://lodash.com/>
  * Build: `lodash modularize modern exports="npm" -o ./npm/`
@@ -913,7 +913,7 @@ var keyPrefix = '__1335248838000__';
 
 module.exports = keyPrefix;
 
-},{}],18:[function(_dereq_,module,exports){
+},{}],18:[function(require,module,exports){
 /**
  * Lo-Dash 2.4.1 (Custom Build) <http://lodash.com/>
  * Build: `lodash modularize modern exports="npm" -o ./npm/`
@@ -942,7 +942,7 @@ function isFunction(value) {
 
 module.exports = isFunction;
 
-},{}],19:[function(_dereq_,module,exports){
+},{}],19:[function(require,module,exports){
 var has = Object.hasOwnProperty
 var proto = Object.getPrototypeOf
 var trace = Error.captureStackTrace
@@ -969,7 +969,7 @@ StandardError.prototype = Object.create(Error.prototype, {
 // Set name explicitly for when the code gets minified.
 StandardError.prototype.name = "StandardError"
 
-},{}],20:[function(_dereq_,module,exports){
+},{}],20:[function(require,module,exports){
 module.exports = extend
 
 function extend(target) {
@@ -986,6 +986,5 @@ function extend(target) {
     return target
 }
 
-},{}]},{},[8])
-(8)
+},{}]},{},[8])(8)
 });
