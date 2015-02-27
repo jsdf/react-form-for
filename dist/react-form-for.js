@@ -1,101 +1,123 @@
-!function(e){if("object"==typeof exports&&"undefined"!=typeof module)module.exports=e();else if("function"==typeof define&&define.amd)define([],e);else{var o;"undefined"!=typeof window?o=window:"undefined"!=typeof global?o=global:"undefined"!=typeof self&&(o=self),o.ReactFormFor=e()}}(function(){var define,module,exports;return (function e(t,n,r){function s(o,u){if(!n[o]){if(!t[o]){var a=typeof require=="function"&&require;if(!u&&a)return a(o,!0);if(i)return i(o,!0);var f=new Error("Cannot find module '"+o+"'");throw f.code="MODULE_NOT_FOUND",f}var l=n[o]={exports:{}};t[o][0].call(l.exports,function(e){var n=t[o][1][e];return s(n?n:e)},l,l.exports,e,t,n,r)}return n[o].exports}var i=typeof require=="function"&&require;for(var o=0;o<r.length;o++)s(r[o]);return s})({1:[function(require,module,exports){
-/* @flow */
-var React = require('./react')
-var $__0=  React.addons,cloneWithProps=$__0.cloneWithProps
-var isElement = React.isValidElement || React.isValidComponent
+!function(e){if("object"==typeof exports&&"undefined"!=typeof module)module.exports=e();else if("function"==typeof define&&define.amd)define([],e);else{var o;"undefined"!=typeof window?o=window:"undefined"!=typeof global?o=global:"undefined"!=typeof self&&(o=self),o.ReactFormFor=e()}}(function(){var define,module,exports;return (function e(t,n,r){function s(o,u){if(!n[o]){if(!t[o]){var a=typeof require=="function"&&require;if(!u&&a)return a(o,!0);if(i)return i(o,!0);throw new Error("Cannot find module '"+o+"'")}var f=n[o]={exports:{}};t[o][0].call(f.exports,function(e){var n=t[o][1][e];return s(n?n:e)},f,f.exports,e,t,n,r)}return n[o].exports}var i=typeof require=="function"&&require;for(var o=0;o<r.length;o++)s(r[o]);return s})({1:[function(_dereq_,module,exports){
+"use strict";
 
-function createElementFrom(component    , props    )        {
+/* @flow */
+var React = _dereq_("./react");
+var cloneWithProps = React.addons.cloneWithProps;
+
+var isElement = React.isValidElement || React.isValidComponent;
+
+function createElementFrom(component, props) {
   if (isElement(component)) {
-    return cloneWithProps(component, props)
+    return cloneWithProps(component, props);
   } else {
-    return React.createElement(component, props)
+    return React.createElement(component, props);
   }
 }
 
-module.exports = createElementFrom
+module.exports = createElementFrom;
+},{"./react":13}],2:[function(_dereq_,module,exports){
+"use strict";
 
-},{"./react":11}],2:[function(require,module,exports){
 /* @flow */
-var React = require('./react')
-var $__0=    require('./util'),extend=$__0.extend,omit=$__0.omit,uniqueId=$__0.uniqueId
-var labelForName = require('./label-for-name')
+var React = _dereq_("./react");
 
-var FieldProxyMixin     = {  
+var _require = _dereq_("./util");
+
+var extend = _require.extend;
+var omit = _require.omit;
+var uniqueId = _require.uniqueId;
+
+var labelForName = _dereq_("./label-for-name");
+
+var FieldProxyMixin = {
   statics: {
-    isFieldProxy: true,
-  },
-  getDefaultProps:function()        {
+    isFieldProxy: true },
+  getDefaultProps: function getDefaultProps() {
     return {
-      type: 'text',
-    }
+      type: "text" };
   },
-  getName:function()        {
-    return this.props.for || this.props.name
+  getName: function getName() {
+    return this.props["for"] || this.props.name;
   },
-  getPathWithName:function()               {
-    return this.props.form.path.concat(this.getName())
+  getPathWithName: function getPathWithName() {
+    var form = arguments[0] === undefined ? this.props.form : arguments[0];
+
+    return form.path.concat(this.getName());
   },
-  handleChange:function(e    ) {
-    var updatedValue
-    var $__0=  this.props,form=$__0.form
-    var name = this.getName()
-    if (e && typeof e == 'object' && e.target) {
-      if (e.stopPropagation) e.stopPropagation()
-      updatedValue = e.target.value
+  handleChange: function handleChange(e, form) {
+    var updatedValue;
+    var name = this.getName();
+    if (e && typeof e == "object" && e.target) {
+      if (e.stopPropagation) e.stopPropagation();
+      updatedValue = e.target.value;
     } else {
-      updatedValue = e
+      updatedValue = e;
     }
 
-    form.applyUpdate(updatedValue, form.path.concat(name))
+    form.applyUpdate(updatedValue, form.path.concat(name));
   },
-  getFieldProps:function()        {
-    var $__0=  this.props,form=$__0.form
-    var type = this.props.inputType || this.props.type
-    var name = this.getName()
-    var label = this.props.label || form.getLabelFor(name) || labelForName(name)
-    var value = form.getValueFor(name)
-    var validation = form.getExternalValidationFor(name)
-    var hint = form.getHintsFor(name)
-    var id = ("rff-field-input-" + uniqueId(null))
-    var className = ("field-" + this.getPathWithName().join('-'))
-    var onChange = this.handleChange
+  getFieldProps: function getFieldProps() {
+    var _this = this;
 
-    return extend(omit(this.props, 'for'), {value:value, name:name, type:type, onChange:onChange, label:label, validation:validation, id:id, className:className})
+    var form = arguments[0] === undefined ? this.props.form : arguments[0];
+
+    var type = this.props.inputType || this.props.type;
+    var name = this.getName();
+    var label = this.props.label || form.getLabelFor(name) || labelForName(name);
+    var value = form.getValueFor(name);
+    var validation = form.getExternalValidationFor(name);
+    var hint = form.getHintsFor(name);
+    var id = "rff-field-input-" + uniqueId(null);
+    var className = "field-" + this.getPathWithName(form).join("-");
+    var onChange = function (e) {
+      return _this.handleChange(e, form);
+    };
+
+    return extend(omit(this.props, "for"), { value: value, name: name, type: type, onChange: onChange, label: label, validation: validation, id: id, className: className });
   },
-  getFieldComponent:function()                           {
-    return this.props.component || this.props.form.fieldComponent
-  },
-}
+  getFieldComponent: function getFieldComponent() {
+    return this.props.component || this.props.form.fieldComponent;
+  } };
 
-module.exports = FieldProxyMixin
+module.exports = FieldProxyMixin;
+},{"./label-for-name":10,"./react":13,"./util":14}],3:[function(_dereq_,module,exports){
+"use strict";
 
-},{"./label-for-name":10,"./react":11,"./util":12}],3:[function(require,module,exports){
 /* @flow */
-var React = require('./react')
-var createElementFrom = require('./create-element-from')
-var FieldProxyMixin = require('./field-proxy-mixin')
+var React = _dereq_("./react");
+var createElementFrom = _dereq_("./create-element-from");
+var FieldProxyMixin = _dereq_("./field-proxy-mixin");
 
-var FieldProxy     = React.createClass({displayName: 'FieldProxy',
-  mixins: [
-    FieldProxyMixin,
-  ],
-  render:function() {
-    if (!this.props.form) throw new Error(("no form for " + this.getName()))
-    return createElementFrom(this.getFieldComponent(), this.getFieldProps())
+var FieldProxy = React.createClass({
+  displayName: "FieldProxy",
+
+  mixins: [FieldProxyMixin],
+  render: function render() {
+    if (!this.props.form) throw new Error("no form for " + this.getName());
+    return createElementFrom(this.getFieldComponent(), this.getFieldProps());
   }
-})
+});
 
-module.exports = FieldProxy
+module.exports = FieldProxy;
+},{"./create-element-from":1,"./field-proxy-mixin":2,"./react":13}],4:[function(_dereq_,module,exports){
+"use strict";
 
-},{"./create-element-from":1,"./field-proxy-mixin":2,"./react":11}],4:[function(require,module,exports){
 /* @flow */
-var React = require('./react')
-var $__0=   require('./util'),omit=$__0.omit,extend=$__0.extend
-var $__1=  require('./react').addons,classSet=$__1.classSet
+var React = _dereq_("./react");
+
+var _require = _dereq_("./util");
+
+var omit = _require.omit;
+var extend = _require.extend;
+
+var classSet = _dereq_("classnames");
 
 // a subset of react-bootstrap/Input, without any bootstrapisms
 // most importantly it accepts value and label props and an onChange callback
-var Field = React.createClass({displayName: 'Field',
+var Field = React.createClass({
+  displayName: "Field",
+
   propTypes: {
     type: React.PropTypes.string,
     label: React.PropTypes.any,
@@ -108,427 +130,702 @@ var Field = React.createClass({displayName: 'Field',
     labelClassName: React.PropTypes.string,
     onChange: React.PropTypes.func
   },
-  getInputDOMNode:function()     {
-    return this.refs.input.getDOMNode()
+  getInputDOMNode: function getInputDOMNode() {
+    return this.refs.input.getDOMNode();
   },
-  getValue:function()        {
-    if (typeof this.props.type == 'string') return this.getInputDOMNode().value
-    else throw new Error('Cannot use getValue without specifying input type.')
+  getValue: function getValue() {
+    if (typeof this.props.type == "string") {
+      return this.getInputDOMNode().value;
+    } else throw new Error("Cannot use getValue without specifying input type.");
   },
-  getChecked:function()         {
-    return Boolean(this.getInputDOMNode().checked)
+  getChecked: function getChecked() {
+    return Boolean(this.getInputDOMNode().checked);
   },
-  renderInput:function()     {
-    var input = null
+  renderInput: function renderInput() {
+    var input = null;
 
     if (!this.props.type) {
-      return this.props.children
+      return this.props.children;
     }
 
-    var propsForInput = extend(omit(this.props, 'form', 'name'), {ref: "input", key: "input"}) 
+    var propsForInput = extend(omit(this.props, "form", "name"), { ref: "input", key: "input" });
 
     switch (this.props.type) {
-      case 'select':
-        input = React.DOM.select(extend({children: this.props.children}, propsForInput))
-        break
-      case 'textarea':
-        input = React.DOM.textarea(propsForInput)
-        break
-      case 'submit':
-        input = React.DOM.input(extend({type: "submit"}, propsForInput))
-        break
+      case "select":
+        input = React.DOM.select(extend({ children: this.props.children }, propsForInput));
+        break;
+      case "textarea":
+        input = React.DOM.textarea(propsForInput);
+        break;
+      case "submit":
+        input = React.DOM.input(extend({ type: "submit" }, propsForInput));
+        break;
       default:
-        input = React.DOM.input(propsForInput)
+        input = React.DOM.input(propsForInput);
     }
 
-    return input
+    return input;
   },
-  renderHint:function()     {
-    var hint = this.props.help || this.props.hint
-    return hint ? (
-      React.createElement("span", {key: "hint", className: "field-hint"}, 
-        hint
-      )
-    ) : null
+  renderHint: function renderHint() {
+    var hint = this.props.help || this.props.hint;
+    return hint ? React.createElement(
+      "span",
+      { key: "hint", className: "field-hint" },
+      hint
+    ) : null;
   },
-  renderErrorMessage:function()     {
-    var errorMessage = this.props.validation
-    return errorMessage ? (
-      React.createElement("span", {key: "errorMessage", className: "field-error-message"}, 
-        errorMessage
-      )
-    ) : null
+  renderErrorMessage: function renderErrorMessage() {
+    var errorMessage = this.props.validation;
+    return errorMessage ? React.createElement(
+      "span",
+      { key: "errorMessage", className: "field-error-message" },
+      errorMessage
+    ) : null;
   },
-  renderWrapper:function(children    )     {
-    return this.props.wrapperClassName ? (
-      React.createElement("div", {className: this.props.wrapperClassName, key: "wrapper"}, 
-        children
-      )
-    ) : children
+  renderWrapper: function renderWrapper(children) {
+    return this.props.wrapperClassName ? React.createElement(
+      "div",
+      { className: this.props.wrapperClassName, key: "wrapper" },
+      children
+    ) : children;
   },
-  renderLabel:function(children    )     {
-    return this.props.label ? (
-      React.createElement("label", {htmlFor: this.props.id, className: this.props.labelClassName, key: "label"}, 
-        children, 
-        this.props.label
-      )
-    ) : children
+  renderLabel: function renderLabel(children) {
+    return this.props.label ? React.createElement(
+      "label",
+      { htmlFor: this.props.id, className: this.props.labelClassName, key: "label" },
+      children,
+      this.props.label
+    ) : children;
   },
-  renderFieldWrapper:function(children    )     {
-    var fieldClassName = this.props.groupClassName || this.props.fieldClassName
+  renderFieldWrapper: function renderFieldWrapper(children) {
+    var fieldClassName = this.props.groupClassName || this.props.fieldClassName;
     var fieldClassSet = {
-      'rff-field': true,
-      'rff-field-with-errors': this.props.validation,
-    }
-    if (fieldClassName) fieldClassSet[fieldClassName] = true
-    return React.createElement("div", {className: classSet(fieldClassSet), children: children})
+      "rff-field": true,
+      "rff-field-with-errors": this.props.validation };
+    if (fieldClassName) fieldClassSet[fieldClassName] = true;
+    return React.createElement("div", { className: classSet(fieldClassSet), children: children });
   },
-  render:function()     {
-    return this.renderFieldWrapper([
-      this.renderLabel(null),
-      this.renderWrapper([
-        this.renderInput(),
-        this.renderHint(),
-        this.renderErrorMessage(),
-      ])
-    ])
+  render: function render() {
+    return this.renderFieldWrapper([this.renderLabel(null), this.renderWrapper([this.renderInput(), this.renderHint(), this.renderErrorMessage()])]);
   }
-})
+});
 
-module.exports = Field
+module.exports = Field;
+},{"./react":13,"./util":14,"classnames":15}],5:[function(_dereq_,module,exports){
+"use strict";
 
-},{"./react":11,"./util":12}],5:[function(require,module,exports){
 /* @flow */
-var React = require('./react')
-var $__0=   require('./util'),omit=$__0.omit,extend=$__0.extend
-var createElementFrom = require('./create-element-from')
-var Form = require('./form') // avoid circular require
+var React = _dereq_("./react");
 
-var API_PROPS = ['for', 'name', 'value', 'formDelegate']
+var _require = _dereq_("./util");
 
-var FormProxyMixin     = {
+var omit = _require.omit;
+var extend = _require.extend;
+
+var createElementFrom = _dereq_("./create-element-from");
+var Form = _dereq_("./form"); // avoid circular require
+
+var API_PROPS = ["for", "name", "value", "formDelegate"];
+
+var FormProxyMixin = {
   statics: {
-    isFormProxy: true,
+    isFormProxy: true },
+  isTopLevelForm: function isTopLevelForm() {
+    // if this form proxy has been provided with a 'value' prop, it could become
+    // the root of a new form structure. not yet supported.
+    return Boolean(Form.getValueFromComponent(this));
   },
-  isTopLevelForm:function()         {
-    return Boolean(Form.getValueFromComponent(this))
-  },
-  renderFormChildren:function()     {
-    return new Form(this, this.props.delegateForm).getChildren()
-  },
-  getFormProps:function()        {
-    var formProps = omit(this.props, API_PROPS)
-    formProps['children'] = this.renderFormChildren()
-    return formProps
-  },
-}
+  renderFormChildren: function renderFormChildren() {
+    var form = arguments[0] === undefined ? this.getForm() : arguments[0];
 
-module.exports = FormProxyMixin
+    return form.getChildren();
+  },
+  getForm: function getForm() {
+    return new Form(this, this.props.parentForm);
+  },
+  getFormProps: function getFormProps() {
+    var form = arguments[0] === undefined ? this.getForm() : arguments[0];
 
-},{"./create-element-from":1,"./form":7,"./react":11,"./util":12}],6:[function(require,module,exports){
+    var formProps = omit(this.props, API_PROPS);
+    return formProps;
+  } };
+
+module.exports = FormProxyMixin;
+},{"./create-element-from":1,"./form":7,"./react":13,"./util":14}],6:[function(_dereq_,module,exports){
+"use strict";
+
 /* @flow */
-var React = require('./react')
-var $__0=  React.addons,classSet=$__0.classSet
-var FormProxyMixin = require('./form-proxy-mixin')
-var createElementFrom = require('./create-element-from')
+var React = _dereq_("./react");
+var classSet = _dereq_("classnames");
+var FormProxyMixin = _dereq_("./form-proxy-mixin");
+var createElementFrom = _dereq_("./create-element-from");
 
-var FormProxy = React.createClass({displayName: 'FormProxy',
-  mixins: [
-    FormProxyMixin,
-  ],
-  render:function() {
-    var formProps = this.getFormProps()
+var FormProxy = React.createClass({
+  displayName: "FormProxy",
+
+  mixins: [FormProxyMixin],
+  render: function render() {
+    var form = this.getForm();
+    var formProps = this.getFormProps(form);
+    formProps.children = this.renderFormChildren(form);
+
     if (this.isTopLevelForm()) {
-      formProps.className = classSet(this.props.className, 'rff-form')
-      return this.props.component ? createElementFrom(this.props.component, formProps) : React.DOM.form(formProps)
+      formProps.className = classSet(this.props.className, "rff-form");
+      return this.props.component ? createElementFrom(this.props.component, formProps) : React.DOM.form(formProps);
     } else {
-      formProps.className = classSet(this.props.className, 'rff-fieldset')
-      return this.props.component ? createElementFrom(this.props.component, formProps) : React.DOM.div(formProps)
+      formProps.className = classSet(this.props.className, "rff-fieldset");
+      return this.props.component ? createElementFrom(this.props.component, formProps) : React.DOM.div(formProps);
     }
-  },
-})
+  } });
 
-module.exports = FormProxy
+module.exports = FormProxy;
+},{"./create-element-from":1,"./form-proxy-mixin":5,"./react":13,"classnames":15}],7:[function(_dereq_,module,exports){
+"use strict";
 
-},{"./create-element-from":1,"./form-proxy-mixin":5,"./react":11}],7:[function(require,module,exports){
+var _prototypeProperties = function (child, staticProps, instanceProps) { if (staticProps) Object.defineProperties(child, staticProps); if (instanceProps) Object.defineProperties(child.prototype, instanceProps); };
+
+var _get = function get(object, property, receiver) { var desc = Object.getOwnPropertyDescriptor(object, property); if (desc === undefined) { var parent = Object.getPrototypeOf(object); if (parent === null) { return undefined; } else { return get(parent, property, receiver); } } else if ("value" in desc && desc.writable) { return desc.value; } else { var getter = desc.get; if (getter === undefined) { return undefined; } return getter.call(receiver); } };
+
+var _inherits = function (subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) subClass.__proto__ = superClass; };
+
+var _classCallCheck = function (instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } };
+
 /* @flow */
-var React = require('./react')
-var $__0=  require('./react').addons,cloneWithProps=$__0.cloneWithProps
-var $__1=   require('./util'),updateIn=$__1.updateIn,extend=$__1.extend
-var Field = require('./field')
-var isElement = React.isValidElement || React.isValidComponent
+var React = _dereq_("./react");
+
+var cloneWithProps = _dereq_("./react").addons.cloneWithProps;
+
+var StandardError = _dereq_("standard-error");
+
+var _require = _dereq_("./util");
+
+var updateIn = _require.updateIn;
+var extend = _require.extend;
+
+var Field = _dereq_("./field");
+var isElement = React.isValidElement || React.isValidComponent;
 
 function hasChildren(node) {
-  return node && node.props && node.props.children
+  return node && node.props && node.props.children;
 }
 
 function getType(node) {
-  return node && node.type || node.constructor
+  return node && node.type || node.constructor;
 }
 
 function isFieldProxy(node) {
-  var type = getType(node)
-  return type && type.isFieldProxy
+  var type = getType(node);
+  return type && type.isFieldProxy;
 }
 
 function isFormProxy(node) {
-  var type = getType(node)
-  return type && type.isFormProxy
+  var type = getType(node);
+  return type && type.isFormProxy;
 }
 
-function NoChildrenError() {
-  var err = new Error('form/fieldset without children not valid')
-  err.name = 'NoChildrenError'
-  return err
-}
+var NoChildrenError = (function (StandardError) {
+  function NoChildrenError() {
+    _classCallCheck(this, NoChildrenError);
+
+    _get(Object.getPrototypeOf(NoChildrenError.prototype), "constructor", this).call(this, "form/fieldset without children not valid");
+  }
+
+  _inherits(NoChildrenError, StandardError);
+
+  return NoChildrenError;
+})(StandardError);
 
 // recursive map over children and inject form prop
 function getChildrenWithForm(node, form) {
-  return React.Children.map(node.props.children, function(child) {
-    if (
-      !isElement(child)
-      || typeof child == 'string'
-      || typeof child.props == 'string'
-      || (child.props && typeof child.props.children == 'string')
-    ) {
-      return child
+  return React.Children.map(node.props.children, function (child) {
+    if (!isElement(child) || typeof child == "string" || typeof child.props == "string" || child.props && typeof child.props.children == "string") {
+      return child;
     }
 
-    var updatedProps = {}
+    var updatedProps = {};
 
     if (isFormProxy(child)) {
-      if (!hasChildren(child)) NoChildrenError()
-      // stop recursion, just inject form delegateForm
-      updatedProps.delegateForm = form
+      if (!hasChildren(child)) throw new NoChildrenError();
+      // stop recursion, just inject form parentForm
+      updatedProps.parentForm = form;
     } else {
       if (isFieldProxy(child)) {
-        updatedProps.form = form
+        updatedProps.form = form;
       }
       // recurse to update grandchildren
-      updatedProps.children = getChildrenWithForm(child, form)
+      updatedProps.children = getChildrenWithForm(child, form);
     }
 
-    return cloneWithProps(child, updatedProps)
-  })
+    return cloneWithProps(child, updatedProps);
+  });
 }
 
+var Form = (function () {
+  function Form(component, parentForm) {
+    _classCallCheck(this, Form);
 
-                
-                      
-                            
-                     
-                     
-                 
-                             
-                
-                                            
-  function Form(component               , delegateForm)       {"use strict";
-    this.component = component
-    if (delegateForm instanceof Form) {
+    this.component = component;
+    if (parentForm instanceof Form) {
       // a nested form fieldset, delegates to the top level form
-      this.acquireOptsFromDelegateForm(component, delegateForm)
+      this.acquireOptsFromParentForm(component, parentForm);
     } else {
       // the top level form
-      this.acquireOptsFromComponent(component)
+      this.acquireOptsFromComponent(component);
     }
   }
-  Form.prototype.getChildren=function() {"use strict";
-    if (this.component.props.children) {
-      // traverse component children and inject form prop
-      return getChildrenWithForm(this.component, this)
-    } else {
-      throw NoChildrenError()
+
+  _prototypeProperties(Form, {
+    getValueFromComponent: {
+      value: function getValueFromComponent(component) {
+        if (component.props.value instanceof Object) {
+          return component.props.value;
+        } else if (component.props["for"] instanceof Object) {
+          return component.props["for"];
+        } else {
+          return null;
+        }
+      },
+      writable: true,
+      configurable: true
+    },
+    getNameFromComponent: {
+      value: function getNameFromComponent(component) {
+        if (typeof component.props.name == "string" || typeof component.props.name == "number") {
+          return component.props.name;
+        } else if (typeof component.props["for"] == "string") {
+          return component.props["for"];
+        } else {
+          return null;
+        }
+      },
+      writable: true,
+      configurable: true
     }
-  };
-  Form.prototype.applyUpdate=function(value       , path)               {"use strict";
-    if (this.delegateForm instanceof Form) {
-      this.delegateForm.applyUpdate(value, path)
-      return
+  }, {
+    getChildren: {
+      value: function getChildren() {
+        if (this.component.props.children) {
+          // traverse component children and inject form prop
+          return getChildrenWithForm(this.component, this);
+        } else {
+          throw new NoChildrenError();
+        }
+      },
+      writable: true,
+      configurable: true
+    },
+    applyUpdate: {
+      value: function applyUpdate(value, path) {
+        if (this.parentForm instanceof Form) {
+          this.parentForm.applyUpdate(value, path);
+          return;
+        }
+
+        if (this.onChange instanceof Function) {
+          this.onChange(updateIn(this.value, path, value));
+        }
+      },
+      writable: true,
+      configurable: true
+    },
+    acquireOptsFromComponent: {
+      value: function acquireOptsFromComponent(component) {
+        var value = Form.getValueFromComponent(component);
+
+        this.value = value || {};
+        this.path = [];
+        this.onChange = component.props.onChange;
+        this.labels = component.props.labels;
+        this.externalValidation = component.props.externalValidation;
+        this.hints = component.props.hints;
+
+        this.fieldComponent = component.props.fieldComponent || Field;
+      },
+      writable: true,
+      configurable: true
+    },
+    acquireOptsFromParentForm: {
+      value: function acquireOptsFromParentForm(component, parentForm) {
+        var name = Form.getNameFromComponent(component);
+        if (parentForm instanceof Form && name == null) throw new Error("name required when parentForm provided");
+        if (!(parentForm instanceof Form)) throw new Error("invalid parentForm");
+        this.parentForm = parentForm;
+        this.path = parentForm.path.concat(name);
+
+        this.value = parentForm.getValueFor(name) || {};
+        this.labels = parentForm.getLabelFor(name);
+        this.externalValidation = parentForm.getExternalValidationFor(name);
+        this.hints = parentForm.getHintsFor(name);
+
+        this.fieldComponent = component.props.fieldComponent || parentForm.fieldComponent || Field;
+      },
+      writable: true,
+      configurable: true
+    },
+    getValueFor: {
+      value: function getValueFor(name) {
+        return this.value[name];
+      },
+      writable: true,
+      configurable: true
+    },
+    getLabelFor: {
+      value: function getLabelFor(name) {
+        return this.labels instanceof Object ? this.labels[name] : null;
+      },
+      writable: true,
+      configurable: true
+    },
+    getExternalValidationFor: {
+      value: function getExternalValidationFor(name) {
+        return this.externalValidation instanceof Object ? this.externalValidation[name] : null;
+      },
+      writable: true,
+      configurable: true
+    },
+    getHintsFor: {
+      value: function getHintsFor(name) {
+        return this.hints instanceof Object ? this.hints[name] : null;
+      },
+      writable: true,
+      configurable: true
     }
+  });
 
-    if (this.onChange instanceof Function) {
-      this.onChange(updateIn(this.value, path, value))
-    }
-  };
-  Form.prototype.acquireOptsFromComponent=function(component)                {"use strict";
-    var value = Form.getValueFromComponent(component)
-    
-    this.value = value || {}
-    this.path = []
-    this.onChange = component.props.onChange
-    this.labels = component.props.labels
-    this.externalValidation = component.props.externalValidation
-    this.hints = component.props.hints
+  return Form;
+})();
 
-    this.fieldComponent = component.props.fieldComponent || Field
-  };
-  Form.prototype.acquireOptsFromDelegateForm=function(component               , delegateForm)      {"use strict";
-    var name = Form.getNameFromComponent(component)
-    if (delegateForm instanceof Form && name == null) throw new Error('name required when delegateForm provided')
-    if (!(delegateForm instanceof Form)) throw new Error('invalid delegateForm')
-    this.delegateForm = delegateForm
-    this.path = delegateForm.path.concat(name)
+module.exports = Form;
+},{"./field":4,"./react":13,"./util":14,"standard-error":19}],8:[function(_dereq_,module,exports){
+"use strict";
 
-    this.value = delegateForm.getValueFor(name) || {}
-    this.labels = delegateForm.getLabelFor(name)
-    this.externalValidation = delegateForm.getExternalValidationFor(name)
-    this.hints = delegateForm.getHintsFor(name)
-
-    this.fieldComponent = component.props.fieldComponent || delegateForm.fieldComponent || Field
-  };
-  Form.prototype.getValueFor=function(name)             {"use strict";
-    return this.value[name]
-  };
-  Form.prototype.getLabelFor=function(name)             {"use strict";
-    return this.labels instanceof Object ? this.labels[name] : null
-  };
-  Form.prototype.getExternalValidationFor=function(name)             {"use strict";
-    return this.externalValidation instanceof Object ? this.externalValidation[name] : null
-  };
-  Form.prototype.getHintsFor=function(name)             {"use strict";
-    return this.hints instanceof Object ? this.hints[name] : null
-  };
-  Form.getValueFromComponent=function(component)                        {"use strict";
-    if (component.props.value instanceof Object) {
-      return component.props.value
-    } else if (component.props.for instanceof Object) {
-      return component.props.for
-    } else {
-      return null
-    }
-  };
-  Form.getNameFromComponent=function(component)                        {"use strict";
-    if (typeof component.props.name == 'string') {
-      return component.props.name  
-    } else if (typeof component.props.for == 'string') {
-      return component.props.for
-    } else {
-      return null
-    }
-  };
-
-
-module.exports = Form
-
-},{"./field":4,"./react":11,"./util":12}],8:[function(require,module,exports){
 /* @flow */
-var Form = require('./form-proxy')
-var Field = require('./field-proxy')
+var Form = _dereq_("./form-proxy");
+var Field = _dereq_("./field-proxy");
+var List = _dereq_("./list-proxy");
+var ListEditor = _dereq_("./list-editor");
 // aliases
-var Fields = require('./form-proxy')
-var Fieldset = require('./form-proxy')
+var Fields = _dereq_("./form-proxy");
+var Fieldset = _dereq_("./form-proxy");
 
-module.exports = {Form:Form, Field:Field, Fields:Fields, Fieldset:Fieldset}
+module.exports = { Form: Form, Field: Field, Fields: Fields, Fieldset: Fieldset, List: List, Components: { ListEditor: ListEditor } };
+},{"./field-proxy":3,"./form-proxy":6,"./list-editor":11,"./list-proxy":12}],9:[function(_dereq_,module,exports){
+"use strict";
 
-},{"./field-proxy":3,"./form-proxy":6}],9:[function(require,module,exports){
 /* @flow */
-var ID_SUFFIX = new RegExp('(_ids|_id)$', 'g')
-var UNDERBAR = new RegExp('_', 'g')
+var ID_SUFFIX = new RegExp("(_ids|_id)$", "g");
+var UNDERBAR = new RegExp("_", "g");
 
-function capitalize(str       )        {
-  str = str.toLowerCase()
-  return str.substring(0, 1).toUpperCase() + str.substring(1)
+function capitalize(str) {
+  str = str.toLowerCase();
+  return str.substring(0, 1).toUpperCase() + str.substring(1);
 }
 
-function humanize(str       )        {
-  str = str.toLowerCase()
-  str = str.replace(ID_SUFFIX, '')
-  str = str.replace(UNDERBAR, ' ')
-  str = capitalize(str)
-  return str
+function humanize(str) {
+  str = str.toLowerCase();
+  str = str.replace(ID_SUFFIX, "");
+  str = str.replace(UNDERBAR, " ");
+  str = capitalize(str);
+  return str;
 }
 
-module.exports = {humanize:humanize, capitalize:capitalize}
+module.exports = { humanize: humanize, capitalize: capitalize };
+},{}],10:[function(_dereq_,module,exports){
+"use strict";
 
-},{}],10:[function(require,module,exports){
 /* @flow */
-var memoize = require('lodash.memoize/index')
-var $__0=  require('./inflection'),humanize=$__0.humanize
+var memoize = _dereq_("lodash.memoize/index");
+
+var _require = _dereq_("./inflection");
+
+var humanize = _require.humanize;
 
 // a memoized inflection of the field name
-var labelForName = memoize(humanize)
+var labelForName = memoize(humanize);
 
-module.exports = labelForName
+module.exports = labelForName;
+},{"./inflection":9,"lodash.memoize/index":16}],11:[function(_dereq_,module,exports){
+"use strict";
 
-},{"./inflection":9,"lodash.memoize/index":13}],11:[function(require,module,exports){
+var _extends = Object.assign || function (target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i]; for (var key in source) { if (Object.prototype.hasOwnProperty.call(source, key)) { target[key] = source[key]; } } } return target; };
+
 /* @flow */
-if (typeof React == 'undefined') {
-  module.exports = require('react/addons')
+var React = _dereq_("./react");
+
+var _require = _dereq_("./util");
+
+var omit = _require.omit;
+var cloneWithProps = React.addons.cloneWithProps;
+
+var classSet = _dereq_("classnames");
+
+var ListEditor = React.createClass({
+  displayName: "ListEditor",
+
+  handleChange: function handleChange(update) {
+    this.props.onChange(update);
+  },
+  handleAddItem: function handleAddItem() {
+    var value = this.props.value;
+
+    this.handleChange(value.concat(null));
+  },
+  handleRemoveItem: function handleRemoveItem(index) {
+    var value = this.props.value;
+
+    if (index === 0 && value.length === 1) {
+      // replace with single null item
+      this.handleChange([null]);
+    } else {
+      // remove item by index
+      this.handleChange(value.filter(function (v, i) {
+        return index !== i;
+      }));
+    }
+  },
+  renderItemWrapper: function renderItemWrapper(item) {
+    var _this = this;
+
+    return React.createElement(
+      "div",
+      { key: item.props.name, className: "rff-array-editor-item" },
+      item,
+      React.createElement(
+        "button",
+        {
+          onClick: function () {
+            return _this.handleRemoveItem(item.props.name);
+          },
+          tabIndex: "-1",
+          type: "button",
+          className: "rff-array-editor-item-remove" },
+        "× ",
+        this.props.removeItemLabel
+      )
+    );
+  },
+  render: function render() {
+    var _this = this;
+
+    var items = React.Children.map(this.props.children, function (item) {
+      return _this.renderItemWrapper(item);
+    });
+    var inherited = omit(this.props, "for", "name", "label", "value", "type", "id");
+    return React.createElement(
+      "div",
+      _extends({}, inherited, { className: classSet(this.props.className, "rff-array-editor") }),
+      React.createElement(
+        "div",
+        { className: "rff-array-editor-items" },
+        items
+      ),
+      React.createElement(
+        "button",
+        {
+          onClick: function () {
+            return _this.handleAddItem();
+          },
+          type: "button",
+          className: "rff-array-editor-item-add"
+        },
+        "+ ",
+        this.props.addItemLabel
+      )
+    );
+  }
+});
+
+module.exports = ListEditor;
+},{"./react":13,"./util":14,"classnames":15}],12:[function(_dereq_,module,exports){
+"use strict";
+
+var _extends = Object.assign || function (target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i]; for (var key in source) { if (Object.prototype.hasOwnProperty.call(source, key)) { target[key] = source[key]; } } } return target; };
+
+/* @flow */
+var React = _dereq_("./react");
+var cloneWithProps = React.addons.cloneWithProps;
+
+var classSet = _dereq_("classnames");
+var FormProxyMixin = _dereq_("./form-proxy-mixin");
+var FieldProxyMixin = _dereq_("./field-proxy-mixin");
+var FormProxy = _dereq_("./form-proxy");
+var createElementFrom = _dereq_("./create-element-from");
+
+var _require = _dereq_("./util");
+
+var omit = _require.omit;
+var extend = _require.extend;
+
+var ListProxy = React.createClass({
+  displayName: "ListProxy",
+
+  mixins: [FormProxyMixin, FieldProxyMixin],
+  statics: {
+    isListProxy: true },
+  renderListChildren: function renderListChildren() {
+    var _this = this;
+
+    var form = arguments[0] === undefined ? this.getForm() : arguments[0];
+
+    var form = this.getForm();
+    // note that is effectively creating a fieldset for each item in the array
+    // and using that item in the array as the value for the fieldset, with the
+    // child FormProxy elements passed into the ListProxy as the fields
+    return form.value.map(function (item, index) {
+      // note: children are passed to new FormProxy
+      // this is important as a ListProxy is basically a FormProxy, but repeated
+      // TODO: investigate whether child elements should be cloned
+      var inherited = omit(_this.props, "for", "name", "component");
+      return React.createElement(FormProxy, _extends({}, inherited, { name: index, key: index, parentForm: form }));
+    });
+  },
+  render: function render() {
+    var form = this.getForm();
+    var formProps = extend(this.getFieldProps(form.parentForm), this.getFormProps(form));
+    formProps.className = classSet(this.props.className, "rff-list");
+    formProps.children = this.renderListChildren();
+    return this.props.component ? createElementFrom(this.props.component, formProps) : React.DOM.div(formProps);
+  } });
+
+module.exports = ListProxy;
+},{"./create-element-from":1,"./field-proxy-mixin":2,"./form-proxy":6,"./form-proxy-mixin":5,"./react":13,"./util":14,"classnames":15}],13:[function(_dereq_,module,exports){
+"use strict";
+
+/* @flow */
+if (typeof React == "undefined") {
+  module.exports = _dereq_("react/addons");
 } else {
   if (!React.addons) {
-    throw new Error('React addons build is required to use react-form-for')
+    throw new Error("React addons build is required to use react-form-for");
   }
-  module.exports = React
+  module.exports = React;
 }
+},{"react/addons":"g51q1L"}],14:[function(_dereq_,module,exports){
+"use strict";
 
-},{"react/addons":"react/addons"}],12:[function(require,module,exports){
 /* @flow */
-var extend = require('xtend/mutable')
+var extend = _dereq_("xtend/mutable");
 
-var slice = Array.prototype.slice
-var concat = Array.prototype.concat
+var slice = Array.prototype.slice;
+var concat = Array.prototype.concat;
+var toString = Object.prototype.toString;
 
 // subset of underscore methods for our purposes
-function clone(source       )        {
-  return extend({}, source)
+function clone(source) {
+  return extend({}, source);
 }
 
-function merge(              )        {for (var sources=[],$__0=0,$__1=arguments.length;$__0<$__1;$__0++) sources.push(arguments[$__0]);
-  return extend.apply(null, [{}].concat(sources))
+function merge() {
+  for (var _len = arguments.length, sources = Array(_len), _key = 0; _key < _len; _key++) {
+    sources[_key] = arguments[_key];
+  }
+
+  return extend.apply(null, [{}].concat(sources));
 }
 
-function contains(haystack    , needle    )     {
-  return haystack.indexOf(needle) > -1
+function contains(haystack, needle) {
+  return haystack.indexOf(needle) > -1;
 }
 
-function pick(obj                    )        {for (var rest=[],$__0=1,$__1=arguments.length;$__0<$__1;$__0++) rest.push(arguments[$__0]);
-  var iteratee     = rest[0]
-  var result = {}, key
-  if (obj == null) return result
-  if (iteratee instanceof Function) {
+function pick(obj) {
+  for (var _len = arguments.length, rest = Array(_len > 1 ? _len - 1 : 0), _key = 1; _key < _len; _key++) {
+    rest[_key - 1] = arguments[_key];
+  }
+
+  var iteratee = rest[0];
+  var result = {},
+      key;
+  if (obj == null) {
+    return result;
+  }if (iteratee instanceof Function) {
     for (key in obj) {
-      var value = obj[key]
-      if (iteratee(value, key, obj)) result[key] = value
+      var value = obj[key];
+      if (iteratee(value, key, obj)) result[key] = value;
     }
   } else {
-    var keys = concat.apply([], rest)
-    obj = new Object(obj)
+    var keys = concat.apply([], rest);
+    obj = new Object(obj);
     for (var i = 0, length = keys.length; i < length; i++) {
-      key = keys[i]
-      if (key in obj) result[key] = obj[key]
+      key = keys[i];
+      if (key in obj) result[key] = obj[key];
     }
   }
-  return result
+  return result;
 }
 
-function omit(obj       )     {
-  var keys = concat.apply([], slice.call(arguments, 1)).map(String)
-  return pick(obj, function(value, key)  {return !contains(keys, key);})
+function omit(obj) {
+  var keys = concat.apply([], slice.call(arguments, 1)).map(String);
+  return pick(obj, function (value, key) {
+    return !contains(keys, key);
+  });
 }
 
-var idCounter = 0
-function uniqueId(prefix        )        {
-  var id = ++idCounter + ''
-  return typeof prefix == 'string' ? prefix + id : id
+var idCounter = 0;
+function uniqueId(prefix) {
+  var id = ++idCounter + "";
+  return typeof prefix == "string" ? prefix + id : id;
+}
+
+function isArray(arr) {
+  return toString.call(arr) == "[object Array]";
+}
+
+function arrayCopy(arr) {
+  return slice.call(arr);
 }
 
 // update nested object structure via copying
-function updateIn(object       , path              , value    )        {
-  if (!path || !path.length) throw new Error('invalid path')
+function updateIn(object, path, value) {
+  if (!path || !path.length) throw new Error("invalid path");
 
-  var updated = extend({}, object)
-  var $__0=  path,name=$__0[0]
-  if (path.length === 1) {
-    updated[name] = value
+  var updated;
+  if (isArray(object)) {
+    updated = arrayCopy(object);
   } else {
-    updated[name] = updateIn((updated[name] || {}), path.slice(1), value)
+    updated = extend({}, object);
   }
-  return updated
+  var name = path[0];
+
+  if (path.length === 1) {
+    updated[name] = value;
+  } else {
+    updated[name] = updateIn(updated[name] || {}, path.slice(1), value);
+  }
+  return updated;
 }
 
-module.exports = {updateIn:updateIn, clone:clone, extend:extend, merge:merge, omit:omit, pick:pick, contains:contains, uniqueId:uniqueId}
+module.exports = { updateIn: updateIn, clone: clone, extend: extend, merge: merge, omit: omit, pick: pick, contains: contains, uniqueId: uniqueId, isArray: isArray, arrayCopy: arrayCopy };
+},{"xtend/mutable":20}],15:[function(_dereq_,module,exports){
+function classNames() {
+	var args = arguments;
+	var classes = [];
 
-},{"xtend/mutable":16}],13:[function(require,module,exports){
+	for (var i = 0; i < args.length; i++) {
+		var arg = args[i];
+		if (!arg) {
+			continue;
+		}
+
+		if ('string' === typeof arg || 'number' === typeof arg) {
+			classes.push(arg);
+		} else if ('object' === typeof arg) {
+			for (var key in arg) {
+				if (!arg.hasOwnProperty(key) || !arg[key]) {
+					continue;
+				}
+				classes.push(key);
+			}
+		}
+	}
+	return classes.join(' ');
+}
+
+// safely export classNames in case the script is included directly on a page
+if (typeof module !== 'undefined' && module.exports) {
+	module.exports = classNames;
+}
+
+},{}],16:[function(_dereq_,module,exports){
 /**
  * Lo-Dash 2.4.1 (Custom Build) <http://lodash.com/>
  * Build: `lodash modularize modern exports="npm" -o ./npm/`
@@ -537,8 +834,8 @@ module.exports = {updateIn:updateIn, clone:clone, extend:extend, merge:merge, om
  * Copyright 2009-2013 Jeremy Ashkenas, DocumentCloud and Investigative Reporters & Editors
  * Available under MIT license <http://lodash.com/license>
  */
-var isFunction = require('lodash.isfunction'),
-    keyPrefix = require('lodash._keyprefix');
+var isFunction = _dereq_('lodash.isfunction'),
+    keyPrefix = _dereq_('lodash._keyprefix');
 
 /** Used for native method references */
 var objectProto = Object.prototype;
@@ -601,7 +898,7 @@ function memoize(func, resolver) {
 
 module.exports = memoize;
 
-},{"lodash._keyprefix":14,"lodash.isfunction":15}],14:[function(require,module,exports){
+},{"lodash._keyprefix":17,"lodash.isfunction":18}],17:[function(_dereq_,module,exports){
 /**
  * Lo-Dash 2.4.2 (Custom Build) <http://lodash.com/>
  * Build: `lodash modularize modern exports="npm" -o ./npm/`
@@ -616,7 +913,7 @@ var keyPrefix = '__1335248838000__';
 
 module.exports = keyPrefix;
 
-},{}],15:[function(require,module,exports){
+},{}],18:[function(_dereq_,module,exports){
 /**
  * Lo-Dash 2.4.1 (Custom Build) <http://lodash.com/>
  * Build: `lodash modularize modern exports="npm" -o ./npm/`
@@ -645,7 +942,34 @@ function isFunction(value) {
 
 module.exports = isFunction;
 
-},{}],16:[function(require,module,exports){
+},{}],19:[function(_dereq_,module,exports){
+var has = Object.hasOwnProperty
+var proto = Object.getPrototypeOf
+var trace = Error.captureStackTrace
+module.exports = StandardError
+
+function StandardError(msg, props) {
+  // Let all properties be enumerable for easier serialization.
+  if (msg && typeof msg == "object") props = msg, msg = undefined
+  else this.message = msg
+
+  // Name has to be an own property (or on the prototype a single step up) for
+  // the stack to be printed with the correct name.
+  if (props) for (var key in props) this[key] = props[key]
+  if (!has.call(this, "name"))
+    this.name = has.call(proto(this), "name")? this.name : this.constructor.name
+
+  if (trace && !("stack" in this)) trace(this, this.constructor)
+}
+
+StandardError.prototype = Object.create(Error.prototype, {
+  constructor: {value: StandardError, configurable: true, writable: true}
+})
+
+// Set name explicitly for when the code gets minified.
+StandardError.prototype.name = "StandardError"
+
+},{}],20:[function(_dereq_,module,exports){
 module.exports = extend
 
 function extend(target) {
@@ -662,5 +986,6 @@ function extend(target) {
     return target
 }
 
-},{}]},{},[8])(8)
+},{}]},{},[8])
+(8)
 });
