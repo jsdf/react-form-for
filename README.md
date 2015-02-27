@@ -7,6 +7,7 @@ An expressive and intuitive form builder for React, in the style of Rails' `form
 ```js
 var React = require('react')
 var {Form, Fields, Field} = require('react-form-for')
+var {ListEditor} = require('react-form-for').Components
 
 var DateField = require('./date-field')
 var languages = require('./languages')
@@ -31,7 +32,11 @@ var ExampleForm = React.createClass({
       <Form for={value} onChange={this.handleChange}>
         <h2>A Beautiful Form</h2>
         <Field for="name" autofocus />
-        <Field for="birthday" component={DateField} help="Choose a date" />
+        <Field
+          for="birthday"
+          component={<DateField className="on-a-date" />}
+          help="Choose a date"
+        />
         <Field for="language" type="select">
           {this.renderLanguageSelectOptions()}
         </Field>
@@ -42,6 +47,11 @@ var ExampleForm = React.createClass({
             <Field for="state" />
           </Fields>
         </div>
+        <List for="members" component={ListEditor}>
+          <Field for="name" />
+          <Field for="age" />
+          <Field for="occupation" />
+        </List>
       </Form>
     )
   }
