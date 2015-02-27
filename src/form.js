@@ -1,6 +1,7 @@
 /* @flow */
 var React = require('./react')
 var {cloneWithProps} = require('./react').addons
+var StandardError = require('standard-error')
 var {updateIn, extend} = require('./util')
 var Field = require('./field')
 var isElement = React.isValidElement || React.isValidComponent
@@ -23,10 +24,11 @@ function isFormProxy(node) {
   return type && type.isFormProxy
 }
 
-function NoChildrenError() {
-  var err = new Error('form/fieldset without children not valid')
-  err.name = 'NoChildrenError'
-  return err
+class NoChildrenError extends StandardError {
+  name: 'NoChildrenError'
+  constructor() {
+    super('form/fieldset without children not valid')
+  }
 }
 
 // recursive map over children and inject form prop
@@ -44,9 +46,9 @@ function getChildrenWithForm(node, form) {
     var updatedProps = {}
 
     if (isFormProxy(child)) {
-      if (!hasChildren(child)) NoChildrenError()
-      // stop recursion, just inject form delegateForm
-      updatedProps.delegateForm = form
+      if (!hasChildren(child)) throw new NoChildrenError()
+      // stop recursion, just inject form parentForm
+      updatedProps.parentForm = form
     } else {
       if (isFieldProxy(child)) {
         updatedProps.form = form
@@ -64,16 +66,16 @@ class Form {
   path: Array<string>;
   component: ReactComponent;
   onChange: Function;
-  delegateForm: Form;
+  parentForm: Form;
   labels: Object;
   externalValidation: Object;
   hints: Object;
   fieldComponent: ReactClass|ReactComponent;
-  constructor(component:ReactComponent, delegateForm:?Form) {
+  constructor(component:ReactComponent, parentForm:?Form) {
     this.component = component
-    if (delegateForm instanceof Form) {
+    if (parentForm instanceof Form) {
       // a nested form fieldset, delegates to the top level form
-      this.acquireOptsFromDelegateForm(component, delegateForm)
+      this.acquireOptsFromParentForm(component, parentForm)
     } else {
       // the top level form
       this.acquireOptsFromComponent(component)
@@ -84,12 +86,12 @@ class Form {
       // traverse component children and inject form prop
       return getChildrenWithForm(this.component, this)
     } else {
-      throw NoChildrenError()
+      throw new NoChildrenError()
     }
   }
   applyUpdate(value:Object, path:Array<string>) {
-    if (this.delegateForm instanceof Form) {
-      this.delegateForm.applyUpdate(value, path)
+    if (this.parentForm instanceof Form) {
+      this.parentForm.applyUpdate(value, path)
       return
     }
 
@@ -109,19 +111,19 @@ class Form {
 
     this.fieldComponent = component.props.fieldComponent || Field
   }
-  acquireOptsFromDelegateForm(component:ReactComponent, delegateForm:Form) {
+  acquireOptsFromParentForm(component:ReactComponent, parentForm:Form) {
     var name = Form.getNameFromComponent(component)
-    if (delegateForm instanceof Form && name == null) throw new Error('name required when delegateForm provided')
-    if (!(delegateForm instanceof Form)) throw new Error('invalid delegateForm')
-    this.delegateForm = delegateForm
-    this.path = delegateForm.path.concat(name)
+    if (parentForm instanceof Form && name == null) throw new Error('name required when parentForm provided')
+    if (!(parentForm instanceof Form)) throw new Error('invalid parentForm')
+    this.parentForm = parentForm
+    this.path = parentForm.path.concat(name)
 
-    this.value = delegateForm.getValueFor(name) || {}
-    this.labels = delegateForm.getLabelFor(name)
-    this.externalValidation = delegateForm.getExternalValidationFor(name)
-    this.hints = delegateForm.getHintsFor(name)
+    this.value = parentForm.getValueFor(name) || {}
+    this.labels = parentForm.getLabelFor(name)
+    this.externalValidation = parentForm.getExternalValidationFor(name)
+    this.hints = parentForm.getHintsFor(name)
 
-    this.fieldComponent = component.props.fieldComponent || delegateForm.fieldComponent || Field
+    this.fieldComponent = component.props.fieldComponent || parentForm.fieldComponent || Field
   }
   getValueFor(name:?string):any {
     return this.value[name]
@@ -145,7 +147,7 @@ class Form {
     }
   }
   static getNameFromComponent(component:ReactComponent):?string {
-    if (typeof component.props.name == 'string') {
+    if (typeof component.props.name == 'string' || typeof component.props.name == 'number') {
       return component.props.name  
     } else if (typeof component.props.for == 'string') {
       return component.props.for

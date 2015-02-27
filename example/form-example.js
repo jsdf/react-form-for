@@ -1,6 +1,7 @@
 /** @jsx React.DOM */
 var React = require('react')
-var {Form, Fields, Field} = require('../lib/index')
+var {Form, Fields, Field, List} = require('../lib/index')
+var {ListEditor} = require('../lib/index').Components
 var ExampleForm = React.createClass({
   getInitialState: function(){
     return { value: {
@@ -11,6 +12,14 @@ var ExampleForm = React.createClass({
           something: 1,
           something_else: 3,
         },
+        members: [
+          {
+            name: "Jean",
+          },
+          {
+            name: "Billie",
+          },
+        ],
       }
     }
   },
@@ -29,6 +38,9 @@ var ExampleForm = React.createClass({
             <Field for="something_else" />
           </Fields>
         </div>
+        <List for="members" component={<ListEditor />}>
+          <Field for="name" />
+        </List>
       </Form>
     )
   }

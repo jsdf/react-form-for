@@ -33,7 +33,7 @@ describe('form-example', function() {
 
     // expected output formatted for readability with variable ids stripped
     var expectedFormatted = (
-`<form class=" rff-form">
+`<form class="rff-form">
   <div class="rff-field">
     <label for="rff-field-input-1">Name</label>
     <input type="text" value="James" label="Name" id="rff-field-input-1" class="field-name">
@@ -57,6 +57,29 @@ describe('form-example', function() {
         <input type="text" value="3" label="Something else" id="rff-field-input-5" class="field-related-something_else">
       </div>
     </div>
+  </div>
+  <div class="rff-list rff-array-editor">
+    <div class="rff-array-editor-items">
+      <div class="rff-array-editor-item">
+        <div type="text" class="rff-fieldset">
+          <div class="rff-field">
+            <label for="rff-field-input-7">Name</label>
+            <input type="text" value="Jean" label="Name" id="rff-field-input-7" class="field-members-0-name">
+          </div>
+        </div>
+        <button tabindex="-1" type="button" class="rff-array-editor-item-remove">× </button>
+      </div>
+      <div class="rff-array-editor-item">
+        <div type="text" class="rff-fieldset">
+          <div class="rff-field">
+            <label for="rff-field-input-8">Name</label>
+            <input type="text" value="Billie" label="Name" id="rff-field-input-8" class="field-members-1-name">
+          </div>
+        </div>
+        <button tabindex="-1" type="button" class="rff-array-editor-item-remove">× </button>
+      </div>
+    </div>
+    <button type="button" class="rff-array-editor-item-add"><span class="plus big">+</span> </button>
   </div>
 </form>`
     )

@@ -1,7 +1,7 @@
 /* @flow */
 var React = require('./react')
 var {omit, extend} = require('./util')
-var {classSet} = require('./react').addons
+var classSet = require('classnames')
 
 // a subset of react-bootstrap/Input, without any bootstrapisms
 // most importantly it accepts value and label props and an onChange callback

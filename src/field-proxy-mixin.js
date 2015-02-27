@@ -15,12 +15,11 @@ var FieldProxyMixin:any = {
   getName():string {
     return this.props.for || this.props.name
   },
-  getPathWithName():Array<string> {
-    return this.props.form.path.concat(this.getName())
+  getPathWithName(form:?Form = this.props.form):Array<string> {
+    return form.path.concat(this.getName())
   },
-  handleChange(e:any) {
+  handleChange(e:any, form) {
     var updatedValue
-    var {form} = this.props
     var name = this.getName()
     if (e && typeof e == 'object' && e.target) {
       if (e.stopPropagation) e.stopPropagation()
@@ -31,8 +30,7 @@ var FieldProxyMixin:any = {
 
     form.applyUpdate(updatedValue, form.path.concat(name))
   },
-  getFieldProps():Object {
-    var {form} = this.props
+  getFieldProps(form:?Form = this.props.form):Object {
     var type = this.props.inputType || this.props.type
     var name = this.getName()
     var label = this.props.label || form.getLabelFor(name) || labelForName(name)
@@ -40,8 +38,8 @@ var FieldProxyMixin:any = {
     var validation = form.getExternalValidationFor(name)
     var hint = form.getHintsFor(name)
     var id = `rff-field-input-${uniqueId(null)}`
-    var className = `field-${this.getPathWithName().join('-')}`
-    var onChange = this.handleChange
+    var className = `field-${this.getPathWithName(form).join('-')}`
+    var onChange = (e) => this.handleChange(e, form)
 
     return extend(omit(this.props, 'for'), {value, name, type, onChange, label, validation, id, className})
   },

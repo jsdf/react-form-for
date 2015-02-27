@@ -3,6 +3,7 @@ var extend = require('xtend/mutable')
 
 var slice = Array.prototype.slice
 var concat = Array.prototype.concat
+var toString = Object.prototype.toString
 
 // subset of underscore methods for our purposes
 function clone(source:Object):Object {
@@ -48,11 +49,24 @@ function uniqueId(prefix:?string):string {
   return typeof prefix == 'string' ? prefix + id : id
 }
 
+function isArray(arr):boolean {
+  return toString.call(arr) == '[object Array]'
+}
+
+function arrayCopy(arr) {
+  return slice.call(arr)
+}
+
 // update nested object structure via copying
-function updateIn(object:Object, path:Array<string>, value:any):Object {
+function updateIn(object:Object|Array, path:Array<string>, value:any):Object|Array {
   if (!path || !path.length) throw new Error('invalid path')
 
-  var updated = extend({}, object)
+  var updated 
+  if (isArray(object)) {
+    updated = arrayCopy(object)
+  } else {
+    updated = extend({}, object)
+  }
   var [name] = path
   if (path.length === 1) {
     updated[name] = value
@@ -62,4 +76,4 @@ function updateIn(object:Object, path:Array<string>, value:any):Object {
   return updated
 }
 
-module.exports = {updateIn, clone, extend, merge, omit, pick, contains, uniqueId}
+module.exports = {updateIn, clone, extend, merge, omit, pick, contains, uniqueId, isArray, arrayCopy}

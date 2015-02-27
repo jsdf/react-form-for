@@ -11,14 +11,18 @@ var FormProxyMixin:any = {
     isFormProxy: true,
   },
   isTopLevelForm():boolean {
+    // if this form proxy has been provided with a 'value' prop, it could become
+    // the root of a new form structure. not yet supported.
     return Boolean(Form.getValueFromComponent(this))
   },
-  renderFormChildren():any {
-    return new Form(this, this.props.delegateForm).getChildren()
+  renderFormChildren(form:Form = this.getForm()):any {
+    return form.getChildren()
   },
-  getFormProps():Object {
+  getForm():Form {
+    return new Form(this, this.props.parentForm)
+  },
+  getFormProps(form:Form = this.getForm()):Object {
     var formProps = omit(this.props, API_PROPS)
-    formProps['children'] = this.renderFormChildren()
     return formProps
   },
 }
