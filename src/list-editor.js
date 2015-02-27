@@ -49,7 +49,7 @@ var ListEditor = React.createClass({
            type="button"
            className="rff-array-editor-item-add"
          >
-          <span className="plus big">+</span> {this.props.addItemLabel}
+          &#43; {this.props.addItemLabel}
         </button>
       </div>
     )
