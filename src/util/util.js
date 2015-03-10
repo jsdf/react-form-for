@@ -1,11 +1,12 @@
 /* @flow */
 var extend = require('xtend/mutable')
 
+// subset of underscore methods for our purposes
+
 var slice = Array.prototype.slice
 var concat = Array.prototype.concat
 var toString = Object.prototype.toString
 
-// subset of underscore methods for our purposes
 function clone(source:Object):Object {
   return extend({}, source)
 }

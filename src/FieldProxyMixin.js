@@ -1,7 +1,11 @@
 /* @flow */
-var React = require('./react')
-var {extend, omit, uniqueId} = require('./util')
-var labelForName = require('./label-for-name')
+var React = require('./util/React')
+var {extend, omit, uniqueId} = require('./util/util')
+var memoize = require('lodash.memoize/index')
+var {humanize} = require('./util/Inflection')
+
+// a memoized inflection of the field name
+var getLabelForFieldName = memoize(humanize)
 
 var FieldProxyMixin:any = {  
   statics: {
@@ -33,7 +37,7 @@ var FieldProxyMixin:any = {
   getFieldProps(form:?Form = this.props.form):Object {
     var type = this.props.inputType || this.props.type
     var name = this.getName()
-    var label = this.props.label || form.getLabelFor(name) || labelForName(name)
+    var label = this.props.label || form.getLabelFor(name) || getLabelForFieldName(name)
     var value = form.getValueFor(name)
     var validation = form.getExternalValidationFor(name)
     var hint = form.getHintsFor(name)

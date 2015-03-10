@@ -1,9 +1,9 @@
 /* @flow */
-var React = require('./react')
-var {cloneWithProps} = require('./react').addons
+var React = require('./util/React')
+var cloneElement = require('./util/cloneElement')
 var StandardError = require('standard-error')
-var {updateIn, extend} = require('./util')
-var Field = require('./field')
+var {updateIn, extend, pick} = require('./util/util')
+var Field = require('./Field')
 var isElement = React.isValidElement || React.isValidComponent
 
 function hasChildren(node) {
@@ -22,6 +22,11 @@ function isFieldProxy(node) {
 function isFormProxy(node) {
   var type = getType(node)
   return type && type.isFormProxy
+}
+
+function isListProxy(node) {
+  var type = getType(node)
+  return type && type.isListProxy
 }
 
 class NoChildrenError extends StandardError {
@@ -57,9 +62,84 @@ function getChildrenWithForm(node, form) {
       updatedProps.children = getChildrenWithForm(child, form)
     }
 
-    return cloneWithProps(child, updatedProps)
+    return cloneElement(child, updatedProps)
   })
 }
+
+function contextChildValueFor(formContext:Object, propName:?string, name:?string):any {
+  var contextProp = formContext[propName]
+  return contextProp instanceof Object ? contextProp[name] : null
+}
+
+function childContextOf(parentFormContext:Object, childName:?string, propNames:Array<string>) {
+  return propNames.reduce((childContext, propName) => {
+    childContext[propName] = contextChildValueFor(parentFormContext, propName, childName)
+    return childContext
+  }, {})
+}
+
+// TODO: move this elsewhere
+function inferTypeFromFieldComponent(component:ReactComponent) {
+  if (typeof component.props.type == 'undefined') {
+    return 'string'
+  }
+
+  switch (component.props.type) {
+    case 'number':
+      return 'number'
+    case 'checkbox':
+      return 'boolean'
+  }
+  return 'string'
+}
+
+function inferSchemaFromComponent(component:ReactComponent) {
+  var type
+
+  if (isFormProxy(component)) {
+    type = 'object'
+  } else if (isFieldProxy(component)) {
+    type = inferTypeFromFieldComponent(component)
+  } else if (isListProxy(component)) {
+    type = 'array'
+  } else {
+    type = 'object'
+  }
+
+  switch (type) {
+    case 'object':
+      return {
+        type: 'object',
+        properties: {},
+      }
+    case 'array':
+      return {
+        type: 'array',
+        items: {
+          type: 'object',
+          properties: {},
+        },
+      }
+  }
+  return {
+    type: type,
+  }
+}
+
+const INHERITED_CONTEXT_PROPNAMES = [
+  'value',
+  'labels',
+  'externalValidation',
+  'hints',
+]
+
+const INHERITED_COMPONENT_PROPNAMES = [
+  'onChange',
+  'labels',
+  'externalValidation',
+  'hints',
+  'fieldComponent',
+]
 
 class Form {
   value: Object;
@@ -75,10 +155,10 @@ class Form {
     this.component = component
     if (parentForm instanceof Form) {
       // a nested form fieldset, delegates to the top level form
-      this.acquireOptsFromParentForm(component, parentForm)
+      this.acquireOptsForChildForm(component, parentForm)
     } else {
       // the top level form
-      this.acquireOptsFromComponent(component)
+      this.acquireOptsForTopLevelForm(component)
     }
   }
   getChildren() {
@@ -90,52 +170,75 @@ class Form {
     }
   }
   applyUpdate(value:Object, path:Array<string>) {
-    if (this.parentForm instanceof Form) {
-      this.parentForm.applyUpdate(value, path)
+    var formContext = this
+
+    if (formContext.parentForm instanceof Form) {
+      formContext.parentForm.applyUpdate(value, path)
       return
     }
 
-    if (this.onChange instanceof Function) {
-      this.onChange(updateIn(this.value, path, value))
+    if (formContext.onChange instanceof Function) {
+      formContext.onChange(updateIn(formContext.value, path, value))
     }
   }
-  acquireOptsFromComponent(component:ReactComponent) {
-    var value = Form.getValueFromComponent(component)
-    
-    this.value = value || {}
-    this.path = []
-    this.onChange = component.props.onChange
-    this.labels = component.props.labels
-    this.externalValidation = component.props.externalValidation
-    this.hints = component.props.hints
-
-    this.fieldComponent = component.props.fieldComponent || Field
+  acquireOptsForTopLevelForm(component:ReactComponent) {
+    extend(this, Form.getFormContextFromComponent(component))
   }
-  acquireOptsFromParentForm(component:ReactComponent, parentForm:Form) {
+  acquireOptsForChildForm(component:ReactComponent, parentForm:Form) {
     var name = Form.getNameFromComponent(component)
     if (parentForm instanceof Form && name == null) throw new Error('name required when parentForm provided')
     if (!(parentForm instanceof Form)) throw new Error('invalid parentForm')
-    this.parentForm = parentForm
-    this.path = parentForm.path.concat(name)
 
-    this.value = parentForm.getValueFor(name) || {}
-    this.labels = parentForm.getLabelFor(name)
-    this.externalValidation = parentForm.getExternalValidationFor(name)
-    this.hints = parentForm.getHintsFor(name)
+    var formContext = Form.getChildFormContextFromParent(parentForm, name)
 
-    this.fieldComponent = component.props.fieldComponent || parentForm.fieldComponent || Field
+    // extra stuff from component
+    var componentContext = Form.getFormContextFromComponent(component)
+
+    formContext.inferredSchema = inferSchemaFromComponent(component)
+
+    formContext.value = formContext.value || makeDefaultValueForSchema(formContext.inferredSchema)
+    formContext.fieldComponent = componentContext.fieldComponent || formContext.fieldComponent || Field
+
+
+    extend(this, formContext)
   }
+  // deprecated getter methods
   getValueFor(name:?string):any {
-    return this.value[name]
+    return contextChildValueFor(this, 'value', name)
   }
   getLabelFor(name:?string):any {
-    return this.labels instanceof Object ? this.labels[name] : null
+    return contextChildValueFor(this, 'labels', name)
   }
   getExternalValidationFor(name:?string):any {
-    return this.externalValidation instanceof Object ? this.externalValidation[name] : null
+    return contextChildValueFor(this, 'externalValidation', name)
   }
   getHintsFor(name:?string):any {
-    return this.hints instanceof Object ? this.hints[name] : null
+    return contextChildValueFor(this, 'hints', name)
+  }
+  static getChildFormContextFromParent(parentFormContext:Object, childName:string):Object {
+    var childFormContext = childContextOf(parentFormContext, childName, INHERITED_CONTEXT_PROPNAMES)
+
+    childFormContext.parentForm = parentFormContext
+    childFormContext.path = parentFormContext.path.concat(childName)
+
+    // defaults
+    childFormContext.fieldComponent = parentFormContext.fieldComponent
+
+    return childFormContext
+  }
+  static getFormContextFromComponent(component:ReactComponent):Object {
+    var value = Form.getValueFromComponent(component)
+    
+    var formContext = {
+      value: value || (isListProxy(component) ? [] : {}),
+      path: [],
+    }
+
+    extend(formContext, pick(component.props, INHERITED_COMPONENT_PROPNAMES))
+
+    formContext.fieldComponent = formContext.fieldComponent || Field
+
+    return formContext
   }
   static getValueFromComponent(component:ReactComponent):?Object {
     if (component.props.value instanceof Object) {

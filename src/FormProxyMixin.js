@@ -1,8 +1,8 @@
 /* @flow */
-var React = require('./react')
-var {omit, extend} = require('./util')
-var createElementFrom = require('./create-element-from')
-var Form = require('./form') // avoid circular require
+var React = require('./util/React')
+var {omit, extend} = require('./util/util')
+var createElementFrom = require('./util/createElementFrom')
+var Form = require('./Form') // avoid circular require
 
 var API_PROPS = ['for', 'name', 'value', 'formDelegate']
 

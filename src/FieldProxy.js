@@ -1,7 +1,7 @@
 /* @flow */
-var React = require('./react')
-var createElementFrom = require('./create-element-from')
-var FieldProxyMixin = require('./field-proxy-mixin')
+var React = require('./util/React')
+var createElementFrom = require('./util/createElementFrom')
+var FieldProxyMixin = require('./FieldProxyMixin')
 
 var FieldProxy:any = React.createClass({
   mixins: [

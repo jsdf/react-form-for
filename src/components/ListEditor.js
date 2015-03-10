@@ -1,7 +1,6 @@
 /* @flow */
-var React = require('./react')
-var {omit} = require('./util')
-var {cloneWithProps} = React.addons
+var React = require('../util/React')
+var {omit} = require('../util/util')
 var classSet = require('classnames')
 
 var ListEditor = React.createClass({

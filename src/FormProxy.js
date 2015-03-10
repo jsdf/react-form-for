@@ -1,8 +1,8 @@
 /* @flow */
-var React = require('./react')
+var React = require('./util/React')
 var classSet = require('classnames')
-var FormProxyMixin = require('./form-proxy-mixin')
-var createElementFrom = require('./create-element-from')
+var FormProxyMixin = require('./FormProxyMixin')
+var createElementFrom = require('./util/createElementFrom')
 
 var FormProxy = React.createClass({
   mixins: [

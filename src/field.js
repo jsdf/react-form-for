@@ -1,6 +1,6 @@
 /* @flow */
-var React = require('./react')
-var {omit, extend} = require('./util')
+var React = require('./util/React')
+var {omit, extend} = require('./util/util')
 var classSet = require('classnames')
 
 // a subset of react-bootstrap/Input, without any bootstrapisms

@@ -1,12 +1,11 @@
 /* @flow */
-var React = require('./react')
-var {cloneWithProps} = React.addons
+var React = require('./util/React')
 var classSet = require('classnames')
-var FormProxyMixin = require('./form-proxy-mixin')
-var FieldProxyMixin = require('./field-proxy-mixin')
-var FormProxy = require('./form-proxy')
-var createElementFrom = require('./create-element-from')
-var {omit, extend} = require('./util')
+var FormProxyMixin = require('./FormProxyMixin')
+var FieldProxyMixin = require('./FieldProxyMixin')
+var FormProxy = require('./FormProxy')
+var createElementFrom = require('./util/createElementFrom')
+var {omit, extend} = require('./util/util')
 
 var ListProxy = React.createClass({
   mixins: [

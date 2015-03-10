@@ -79,7 +79,7 @@ describe('form-example', function() {
         <button tabindex="-1" type="button" class="rff-array-editor-item-remove">× </button>
       </div>
     </div>
-    <button type="button" class="rff-array-editor-item-add"><span class="plus big">+</span> </button>
+    <button type="button" class="rff-array-editor-item-add">+ </button>
   </div>
 </form>`
     )
