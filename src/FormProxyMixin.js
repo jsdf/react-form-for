@@ -15,13 +15,15 @@ var FormProxyMixin:any = {
     // the root of a new form structure. not yet supported.
     return Boolean(Form.getValueFromComponent(this))
   },
-  renderFormChildren(form:Form = this.getForm()):any {
+  renderFormChildren(form:?Object):any {
+    if (form == null) form = this.getForm()
     return form.getChildren()
   },
-  getForm():Form {
+  getForm():Object {
     return new Form(this, this.props.parentForm)
   },
-  getFormProps(form:Form = this.getForm()):Object {
+  getFormProps(form:?Object):Object {
+    if (form == null) form = this.getForm()
     var formProps = omit(this.props, API_PROPS)
     return formProps
   },

@@ -20,6 +20,7 @@
   "scripts": {
     "test": "npm run prepublish && jest",
     "jest": "jest",
+    "flow": "flow check",
     "watch": "node tasks/watch test src/ example/",
     "demo": "npm run prepublish && mkdir -p example/output/ && browserify -t [ reactify --harmony ] example/demo.js > example/output/bundle.js && cp ./node_modules/bootstrap/dist/css/bootstrap.css example/output/",
     "demo-run": "open http://0.0.0.0:8080/ && http-server example/",
@@ -36,7 +37,8 @@
     ]
   },
   "browser": {
-    "react": "./lib/util/react"
+    "./lib/util/cloneElement": "./lib/util/cloneElement-browser",
+    "./lib/util/React": "./lib/util/React-browser"
   },
   "dependencies": {
     "classnames": "^1.1.4",

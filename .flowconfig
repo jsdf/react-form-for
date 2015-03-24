@@ -1,6 +1,10 @@
-[include]
-./src
 [ignore]
 .*/lib/.*
 .*/dist/.*
 .*/example/.*
+[include]
+./src
+./node_modules/
+[libs]
+
+[options]

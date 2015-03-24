@@ -1,37 +1,48 @@
 /* @flow */
 var React = require('./util/React')
 var cloneElement = require('./util/cloneElement')
+var getElementType = require('./util/getElementType')
 var StandardError = require('standard-error')
 var {updateIn, extend, pick} = require('./util/util')
-var Field = require('./Field')
+var Field = require('./components/Field')
 var isElement = React.isValidElement || React.isValidComponent
 
-function hasChildren(node) {
-  return node && node.props && node.props.children
-}
-
-function getType(node) {
-  return node && node.type || node.constructor
+function hasChildren(node):boolean {
+  if (node != null && node.props != null) {
+    return node.props.children != null
+  }
 }
 
 function isFieldProxy(node) {
-  var type = getType(node)
-  return type && type.isFieldProxy
+  var type = getElementType(node)
+  if (type != null) {
+    return Boolean(type.isFieldProxy)
+  } else {
+    return false
+  }
 }
 
 function isFormProxy(node) {
-  var type = getType(node)
-  return type && type.isFormProxy
+  var type = getElementType(node)
+  if (type != null) {
+    return Boolean(type.isFormProxy)
+  } else {
+    return false
+  }
 }
 
 function isListProxy(node) {
-  var type = getType(node)
-  return type && type.isListProxy
+  var type = getElementType(node)
+  if (type != null) {
+    return Boolean(type.isListProxy)
+  } else {
+    return false
+  }
 }
 
 class NoChildrenError extends StandardError {
-  name: 'NoChildrenError'
   constructor() {
+    this.name = 'NoChildrenError'
     super('form/fieldset without children not valid')
   }
 }
@@ -126,14 +137,14 @@ function inferSchemaFromComponent(component:ReactComponent) {
   }
 }
 
-const INHERITED_CONTEXT_PROPNAMES = [
+var INHERITED_CONTEXT_PROPNAMES = [
   'value',
   'labels',
   'externalValidation',
   'hints',
 ]
 
-const INHERITED_COMPONENT_PROPNAMES = [
+var INHERITED_COMPONENT_PROPNAMES = [
   'onChange',
   'labels',
   'externalValidation',
@@ -170,7 +181,7 @@ class Form {
     }
   }
   applyUpdate(value:Object, path:Array<string>) {
-    var formContext = this
+    var formContext:Object = this
 
     if (formContext.parentForm instanceof Form) {
       formContext.parentForm.applyUpdate(value, path)
@@ -186,17 +197,19 @@ class Form {
   }
   acquireOptsForChildForm(component:ReactComponent, parentForm:Form) {
     var name = Form.getNameFromComponent(component)
-    if (parentForm instanceof Form && name == null) throw new Error('name required when parentForm provided')
     if (!(parentForm instanceof Form)) throw new Error('invalid parentForm')
+    if (!(typeof name == 'string' || typeof name == 'number')) {
+      throw new Error('name required when parentForm provided')
+    }
 
-    var formContext = Form.getChildFormContextFromParent(parentForm, name)
+    var formContext:Object = Form.getChildFormContextFromParent(parentForm, name)
 
     // extra stuff from component
     var componentContext = Form.getFormContextFromComponent(component)
 
     formContext.inferredSchema = inferSchemaFromComponent(component)
 
-    formContext.value = formContext.value || makeDefaultValueForSchema(formContext.inferredSchema)
+    formContext.value = formContext.value // || makeDefaultValueForSchema(formContext.inferredSchema)
     formContext.fieldComponent = componentContext.fieldComponent || formContext.fieldComponent || Field
 
 
@@ -215,8 +228,8 @@ class Form {
   getHintsFor(name:?string):any {
     return contextChildValueFor(this, 'hints', name)
   }
-  static getChildFormContextFromParent(parentFormContext:Object, childName:string):Object {
-    var childFormContext = childContextOf(parentFormContext, childName, INHERITED_CONTEXT_PROPNAMES)
+  static getChildFormContextFromParent(parentFormContext:Object, childName:string|number):Object {
+    var childFormContext = childContextOf(parentFormContext, String(childName), INHERITED_CONTEXT_PROPNAMES)
 
     childFormContext.parentForm = parentFormContext
     childFormContext.path = parentFormContext.path.concat(childName)
@@ -229,9 +242,10 @@ class Form {
   static getFormContextFromComponent(component:ReactComponent):Object {
     var value = Form.getValueFromComponent(component)
     
-    var formContext = {
+    var formContext:Object = {
       value: value || (isListProxy(component) ? [] : {}),
       path: [],
+      fieldComponent: null
     }
 
     extend(formContext, pick(component.props, INHERITED_COMPONENT_PROPNAMES))
@@ -249,7 +263,7 @@ class Form {
       return null
     }
   }
-  static getNameFromComponent(component:ReactComponent):?string {
+  static getNameFromComponent(component:ReactComponent):?string|number {
     if (typeof component.props.name == 'string' || typeof component.props.name == 'number') {
       return component.props.name  
     } else if (typeof component.props.for == 'string') {

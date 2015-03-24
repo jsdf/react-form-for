@@ -50,16 +50,16 @@ function uniqueId(prefix:?string):string {
   return typeof prefix == 'string' ? prefix + id : id
 }
 
-function isArray(arr):boolean {
+function isArray(arr:any):boolean {
   return toString.call(arr) == '[object Array]'
 }
 
-function arrayCopy(arr) {
+function arrayCopy(arr:Array<any>):Array<any> {
   return slice.call(arr)
 }
 
 // update nested object structure via copying
-function updateIn(object:Object|Array, path:Array<string>, value:any):Object|Array {
+function updateIn(object:any, path:any, value:any):any {
   if (!path || !path.length) throw new Error('invalid path')
 
   var updated 

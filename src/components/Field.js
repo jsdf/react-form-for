@@ -1,6 +1,6 @@
 /* @flow */
-var React = require('./util/React')
-var {omit, extend} = require('./util/util')
+var React = require('../util/React')
+var {omit, extend} = require('../util/util')
 var classSet = require('classnames')
 
 // a subset of react-bootstrap/Input, without any bootstrapisms
@@ -86,7 +86,7 @@ var Field = React.createClass({
   },
   renderFieldWrapper(children:any):any {
     var fieldClassName = this.props.groupClassName || this.props.fieldClassName
-    var fieldClassSet = {
+    var fieldClassSet:{[key:string]:string|boolean} = {
       'rff-field': true,
       'rff-field-with-errors': this.props.validation,
     }

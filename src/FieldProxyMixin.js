@@ -1,7 +1,7 @@
 /* @flow */
 var React = require('./util/React')
 var {extend, omit, uniqueId} = require('./util/util')
-var memoize = require('lodash.memoize/index')
+var memoize = require('lodash.memoize')
 var {humanize} = require('./util/Inflection')
 
 // a memoized inflection of the field name
@@ -19,7 +19,8 @@ var FieldProxyMixin:any = {
   getName():string {
     return this.props.for || this.props.name
   },
-  getPathWithName(form:?Form = this.props.form):Array<string> {
+  getPathWithName(form:?Object):Array<string> {
+    if (form == null) form = this.props.form
     return form.path.concat(this.getName())
   },
   handleChange(e:any, form) {
@@ -34,7 +35,8 @@ var FieldProxyMixin:any = {
 
     form.applyUpdate(updatedValue, form.path.concat(name))
   },
-  getFieldProps(form:?Form = this.props.form):Object {
+  getFieldProps(form:?Object):Object {
+    if (form == null) form = this.props.form
     var type = this.props.inputType || this.props.type
     var name = this.getName()
     var label = this.props.label || form.getLabelFor(name) || getLabelForFieldName(name)

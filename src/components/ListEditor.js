@@ -4,14 +4,14 @@ var {omit} = require('../util/util')
 var classSet = require('classnames')
 
 var ListEditor = React.createClass({
-  handleChange(update) {
+  handleChange(update:any) {
     this.props.onChange(update)
   },
   handleAddItem() {
     var {value} = this.props
     this.handleChange(value.concat(null))
   },
-  handleRemoveItem(index) {
+  handleRemoveItem(index:number) {
     var {value} = this.props
     if (index === 0 && value.length === 1) {
       // replace with single null item
@@ -21,7 +21,7 @@ var ListEditor = React.createClass({
       this.handleChange(value.filter((v, i) => index !== i))
     }
   },
-  renderItemWrapper(item) {
+  renderItemWrapper(item:ReactElement):ReactElement {
     return (
       <div key={item.props.name} className="rff-array-editor-item">
         {item}
@@ -35,7 +35,7 @@ var ListEditor = React.createClass({
       </div>
     )
   },
-  render() {
+  render():ReactElement {
     var items = React.Children.map(this.props.children, (item) => this.renderItemWrapper(item))
     var inherited = omit(this.props, 'for', 'name', 'label', 'value', 'type', 'id')
     return (
