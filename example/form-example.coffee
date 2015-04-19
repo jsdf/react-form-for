@@ -1,4 +1,3 @@
-# @cjsx React.DOM
 {Form, Fields, Field} = require 'react-form-for'
 ExampleForm = React.createClass
   handleChange: (updatedValue) -> @setState value: updatedValue

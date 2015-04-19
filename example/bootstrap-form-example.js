@@ -1,4 +1,3 @@
-/** @jsx React.DOM */
 var {Form, Fields, Field} = require('react-form-for')
 // any component which takes a `value` prop (and ideally a `label` prop)
 // and an `onChange` callback prop, can be used as a react-form-for field

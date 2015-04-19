@@ -9,17 +9,19 @@ var FormProxy = React.createClass({
     FormProxyMixin,
   ],
   render() {
-    var form = this.getForm()
-    var formProps = this.getFormProps(form)
-    formProps.children = this.renderFormChildren(form)
+    var formContext = this.getFormContext()
+    var formProps = this.getFormProps(formContext)
+    formProps.children = this.renderFormChildren(formContext)
 
-    if (this.isTopLevelForm()) {
+    var defaultComponent
+    if (this.isFormRoot()) {
       formProps.className = classSet(this.props.className, 'rff-form')
-      return this.props.component ? createElementFrom(this.props.component, formProps) : React.DOM.form(formProps)
+      defaultComponent = React.DOM.form
     } else {
       formProps.className = classSet(this.props.className, 'rff-fieldset')
-      return this.props.component ? createElementFrom(this.props.component, formProps) : React.DOM.div(formProps)
+      defaultComponent = React.DOM.div
     }
+    return this.props.component ? createElementFrom(this.props.component, formProps) : defaultComponent(formProps)
   },
 })
 

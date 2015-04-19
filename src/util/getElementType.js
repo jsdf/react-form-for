@@ -1,5 +1,4 @@
 /* @flow */
-
 function getElementType(node:?Object):?Function {
   if (node != null) {
     if (node.type != null) return node.type

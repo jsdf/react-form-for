@@ -1,4 +1,3 @@
-/** @jsx React.DOM */
 jest.autoMockOff()
 var jQuery = require('jquery')
 var beautify = require('js-beautify')

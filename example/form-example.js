@@ -1,4 +1,3 @@
-/** @jsx React.DOM */
 var React = require('react')
 var {Form, Fields, Field, List} = require('../lib/ReactFormFor')
 var {ListEditor} = require('../lib/ReactFormFor').Components

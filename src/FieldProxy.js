@@ -8,8 +8,9 @@ var FieldProxy:any = React.createClass({
     FieldProxyMixin,
   ],
   render() {
-    if (!this.props.form) throw new Error(`no form for ${this.getName()}`)
-    return createElementFrom(this.getFieldComponent(), this.getFieldProps())
+    var parentContext = this.getParentFormContext()
+    if (!parentContext) throw new Error(`no parent FormContext for ${this.getName()}`)
+    return createElementFrom(this.getFieldComponent(parentContext), this.getFieldProps(parentContext))
   }
 })
 

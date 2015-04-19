@@ -1,6 +1,6 @@
 /* @flow */
 var React = require('../util/React')
-var {omit, extend} = require('../util/util')
+var {omit} = require('../util/util')
 var classSet = require('classnames')
 
 // a subset of react-bootstrap/Input, without any bootstrapisms
@@ -35,17 +35,17 @@ var Field = React.createClass({
       return this.props.children
     }
 
-    var propsForInput = extend(omit(this.props, 'form', 'name'), {ref: "input", key: "input"}) 
+    var propsForInput = Object.assign(omit(this.props, 'form', 'name'), {ref: "input", key: "input"}) 
 
     switch (this.props.type) {
       case 'select':
-        input = React.DOM.select(extend({children: this.props.children}, propsForInput))
+        input = React.DOM.select(Object.assign({children: this.props.children}, propsForInput))
         break
       case 'textarea':
         input = React.DOM.textarea(propsForInput)
         break
       case 'submit':
-        input = React.DOM.input(extend({type: "submit"}, propsForInput))
+        input = React.DOM.input(Object.assign({type: "submit"}, propsForInput))
         break
       default:
         input = React.DOM.input(propsForInput)

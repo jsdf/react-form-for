@@ -1,29 +1,34 @@
 /* @flow */
 var React = require('./util/React')
-var {extend, omit, uniqueId} = require('./util/util')
+var {omit, uniqueId} = require('./util/util')
 var memoize = require('lodash.memoize')
 var {humanize} = require('./util/Inflection')
+var FormContextMixin = require('./FormContextMixin')
 
 // a memoized inflection of the field name
 var getLabelForFieldName = memoize(humanize)
 
-var FieldProxyMixin:any = {  
+var FieldProxyMixin:any = {
   statics: {
     isFieldProxy: true,
   },
+  mixins: [
+    FormContextMixin,
+  ],
   getDefaultProps():Object {
     return {
       type: 'text',
     }
   },
+  // TODO: DRY up to somewhere else
   getName():string {
     return this.props.for || this.props.name
   },
-  getPathWithName(form:?Object):Array<string> {
-    if (form == null) form = this.props.form
-    return form.path.concat(this.getName())
+  getPathWithName(parentContext:?Object):Array<string> {
+    if (parentContext == null) parentContext = this.getParentFormContext()
+    return parentContext.path.concat(this.getName())
   },
-  handleChange(e:any, form) {
+  handleChange(e:any, parentContext) {
     var updatedValue
     var name = this.getName()
     if (e && typeof e == 'object' && e.target) {
@@ -33,24 +38,31 @@ var FieldProxyMixin:any = {
       updatedValue = e
     }
 
-    form.applyUpdate(updatedValue, form.path.concat(name))
+    this.applyUpdate(parentContext, updatedValue, parentContext.path.concat(name))
   },
-  getFieldProps(form:?Object):Object {
-    if (form == null) form = this.props.form
-    var type = this.props.inputType || this.props.type
+  getParentFormContext() {
+    return this.getFormContext()
+  },
+  getFieldProps(parentContext:?Object):Object {
+    if (parentContext == null) parentContext = this.getParentFormContext()
     var name = this.getName()
-    var label = this.props.label || form.getLabelFor(name) || getLabelForFieldName(name)
-    var value = form.getValueFor(name)
-    var validation = form.getExternalValidationFor(name)
-    var hint = form.getHintsFor(name)
-    var id = `rff-field-input-${uniqueId(null)}`
-    var className = `field-${this.getPathWithName(form).join('-')}`
-    var onChange = (e) => this.handleChange(e, form)
 
-    return extend(omit(this.props, 'for'), {value, name, type, onChange, label, validation, id, className})
+    // TODO: move blacklisted props somewhere DRY
+    return Object.assign(omit(this.props, 'for'), {
+      name,
+      type: this.props.inputType || this.props.type,
+      label: this.props.label || parentContext.getChildContextProp('labels', name) || getLabelForFieldName(name),
+      value: parentContext.getChildContextProp('value', name),
+      validation: parentContext.getChildContextProp('externalValidation', name),
+      hint: parentContext.getChildContextProp('hints', name),
+      id: `rff-field-input-${uniqueId(null)}`,
+      className: `field-${this.getPathWithName(parentContext).join('-')}`,
+      onChange: (e) => this.handleChange(e, parentContext),
+    })
   },
-  getFieldComponent():ReactClass|ReactComponent {
-    return this.props.component || this.props.form.fieldComponent
+  getFieldComponent(parentContext:?Object):ReactClass|ReactComponent {
+    if (parentContext == null) parentContext = this.getParentFormContext()
+    return this.props.component || parentContext && parentContext.props.fieldComponent
   },
 }
 

@@ -1,19 +1,10 @@
 /* @flow */
-var extend = require('xtend/mutable')
 
 // subset of underscore methods for our purposes
 
 var slice = Array.prototype.slice
 var concat = Array.prototype.concat
 var toString = Object.prototype.toString
-
-function clone(source:Object):Object {
-  return extend({}, source)
-}
-
-function merge(...sources:Array<Object>):Object {
-  return extend.apply(null, [{}].concat(sources))
-}
 
 function contains(haystack:any, needle:any):any {
   return haystack.indexOf(needle) > -1
@@ -66,7 +57,7 @@ function updateIn(object:any, path:any, value:any):any {
   if (isArray(object)) {
     updated = arrayCopy(object)
   } else {
-    updated = extend({}, object)
+    updated = Object.assign({}, object)
   }
   var [name] = path
   if (path.length === 1) {
@@ -77,4 +68,4 @@ function updateIn(object:any, path:any, value:any):any {
   return updated
 }
 
-module.exports = {updateIn, clone, extend, merge, omit, pick, contains, uniqueId, isArray, arrayCopy}
+module.exports = {updateIn, omit, pick, contains, uniqueId, isArray, arrayCopy}
