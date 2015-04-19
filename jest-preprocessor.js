@@ -5,7 +5,7 @@ module.exports = {
     // Ignore all files within node_modules
     // babel files can be .js, .es, .jsx or .es6
     if (filename.indexOf("node_modules") === -1 && babel.canCompile(filename)) {
-      return babel.transform(src, { filename: filename }).code
+      return babel.transform(src, { filename: filename, stage: 0 }).code
     }
     return src
   }

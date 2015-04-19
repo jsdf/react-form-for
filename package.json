@@ -22,17 +22,24 @@
     "jest": "jest",
     "flow": "flow check",
     "watch": "node tasks/watch test src/ example/",
-    "demo": "npm run prepublish && mkdir -p example/output/ && browserify -t [ reactify --harmony ] example/demo.js > example/output/bundle.js && cp ./node_modules/bootstrap/dist/css/bootstrap.css example/output/",
+    "demo": "npm run prepublish && mkdir -p example/output/ && browserify -t [ babelify --stage 0 ] example/demo.js > example/output/bundle.js && cp ./node_modules/bootstrap/dist/css/bootstrap.css example/output/",
     "demo-run": "open http://0.0.0.0:8080/ && http-server example/",
     "umd": "browserify ./lib/index.js --external react/addons --standalone ReactFormFor > dist/react-form-for.js",
     "dist-umd": "npm run umd; git add dist/; git commit -m 'umd distribution rebuild'",
     "dist-version": "npm version $V; git tag -d v$V; bower version $V; git push origin --tags",
     "dist": "npm run dist-umd; echo 'version:'; read version; V=$version npm run dist-version; git push origin master",
-    "prepublish": "babel --experimental src/ --out-dir lib/"
+    "prepublish": "babel --stage 0 src/ --out-dir lib/"
   },
   "jest": {
     "scriptPreprocessor": "<rootDir>/jest-preprocessor.js",
+    "setupEnvScriptFile": "<rootDir>/jest-setup.js",
+    "testPathIgnorePatterns": [
+      "/node_modules/",
+      "/lib/"
+    ],
     "unmockedModulePathPatterns": [
+      "<rootDir>/node_modules/react",
+      "<rootDir>/src/util",
       "<rootDir>/node_modules"
     ]
   },
@@ -41,18 +48,18 @@
     "./lib/util/React": "./lib/util/React-browser"
   },
   "dependencies": {
-    "babel": "^4.7.16",
     "classnames": "^1.1.4",
     "lodash.memoize": "^2.4.1"
   },
   "devDependencies": {
-    "babel": "^4.5.4",
+    "babel": "^5.1.9",
+    "babelify": "^6.0.2",
     "browserify": "^7.1.0",
     "chokidar": "^0.11.1",
-    "jest-cli": "^0.1.18",
+    "jest-cli": "^0.4.0",
     "jquery": "^2.1.1",
     "js-beautify": "^1.5.4",
-    "react": "^0.12.2",
-    "reactify": "^0.17.0"
+    "object.assign": "^2.0.1",
+    "react": "^0.13.1"
   }
 }
